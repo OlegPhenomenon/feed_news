@@ -1,0 +1,5 @@
+en:
+  pins:
+    index:
+    errors:
+      duplicate_pin: You already pin this post

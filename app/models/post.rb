@@ -35,6 +35,28 @@ class Post < ApplicationRecord
   before_create :assign_published_at
   before_update :assign_published_at
 
+  validate :title_mandatory, on: %i[create update]
+  validate :body_mandatory, on: %i[create update]
+
+  def title_mandatory
+    return if title.empty? && body_text_contain_validator
+
+    errors.add(:base, I18n.t('posts.errors.title_mandatory')) if title.empty? && content.body.attachables.present?
+  end
+
+  def body_mandatory
+    errors.add(:base, I18n.t('posts.errors.body_mandatory')) if title.empty? && !content?
+  end
+
+  def body_text_contain_validator
+    attachables_objects = content.body.attachables.map do |f|
+      "[#{f.filename}]"
+    end
+
+    pure_text = content.to_plain_text.gsub(attachables_objects.join, '').strip
+    pure_text.size.positive?
+  end
+
   def assign_published_at
     self.published_at = Time.zone.now if status == 'published' && published_at.nil?
   end

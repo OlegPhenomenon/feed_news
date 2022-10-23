@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :pin do
-    user { nil }
-    post { nil }
-    position { 1 }
+    association :user, factory: :user
+    association :post, factory: :post
+    position { 0 }
   end
 end

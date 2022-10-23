@@ -1,0 +1,6 @@
+en:
+  posts:
+    index:
+    errors:
+      title_mandatory: Title is mandatory
+      body_mandatory: Body is mandatory

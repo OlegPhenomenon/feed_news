@@ -20,15 +20,21 @@ class PostComponent < ViewComponent::Base
     @pin.present?
   end
 
+  def current_user_is_author?
+    current_user == post.author
+  end
+
   def post_budget
     if post.published?
       content_tag :span do
-        "Published at <u>#{post.published_at.to_formatted_s(:short)}</u> by #{post.user.username}".html_safe
+        "Published at <u>#{post.published_at.to_formatted_s(:short)}</u> by
+          <a href=#{authors_publications_path(id: post.user.id)} target='_top'>#{post.user.username}</a>".html_safe
       end
     else
       content_tag(:span, post.status, class: 'badge bg-secondary') +
         content_tag(:span) do
-          "Created at <u>#{post.created_at.to_formatted_s(:short)}</u> by #{post.user.username}".html_safe
+          "Created at <u>#{post.created_at.to_formatted_s(:short)}</u> by
+            <a href=#{authors_publications_path(id: post.user.id)} target='_top'>#{post.user.username}</a>".html_safe
         end
     end
   end

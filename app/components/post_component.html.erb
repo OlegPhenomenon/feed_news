@@ -1,49 +1,80 @@
-  <div class="col-md-8 mb-4 <%= pin? ? cycle("indigo-bg", "blue-bg", "purple-bg", "orange-bg", "teal-bg")  : 'transparent' %>">
-  <!--Section: Post data-mdb-->
-  <section class="border-bottom mb-4">
+  <div class="mb-4 <%= pin? ? cycle("indigo-bg", "blue-bg", "purple-bg", "orange-bg", "teal-bg")  : 'transparent' %> p-3 rounded shadow">
 
-    <div class="row align-items-center mb-4">
-      <div class="col-lg-6 text-center text-lg-start mb-3 m-lg-0">
+  <section class="border-bottom mb-4">
+    <div class="row align-items-end mb-4">
+      <div class="col-lg-9 text-center text-lg-start mb-3 m-lg-0">
         <%= image_tag @current_user&.avatar, class: 'rounded-5 shadow-1-strong me-2', height: 35 if @current_user&.avatar&.attached? %>
         <%= post_budget %>
       </div>
 
-      <div class="col-lg-6 text-center text-lg-end" style="display: flex">
-        <%= button_to edit_post_path(@post), method: :get, class: 'btn btn-primary px-3 me-1' do %>
-          <i class="fa-solid fa-pen-to-square"></i>
-        <% end %>
-        <%= button_to post_path(@post), method: :delete, class: 'btn btn-primary px-3 me-1',
-                                                  form: { data: { turbo_confirm: "Are you sure?" } },
-                                                  style: 'color: white; background-color: #ff6b6b;' do %>
-          <i class="fa-solid fa-trash"></i>
+      <div class="col-lg-3 text-center text-lg-end" style="display: flex">
+        
+        <% if @current_user && current_user_is_author? %>    
+          <%= button_to edit_post_path(@post), method: :get, class: 'btn btn-primary px-3 me-1' do %>
+            <i class="fa-solid fa-pen-to-square"></i>
+          <% end %>
+          <%= button_to post_path(@post), method: :delete, class: 'btn btn-primary px-3 me-1',
+                                                    form: { data: { turbo_confirm: "Are you sure?" } },
+                                                    style: 'color: white; background-color: #ff6b6b;' do %>
+            <i class="fa-solid fa-trash"></i>
+          <% end %>
         <% end %>
         
-        <% if pin? %>
-            <%= button_to pin_path(id: pin_id), method: :delete, class: 'btn btn-primary px-3 me-1',
-                                                form: { data: { turbo_confirm: "Are you sure?" } },
-                                                style: 'color: white; background-color: #ff6b6b;' do %>
-              <i class="fa-solid fa-thumbtack"></i>
-            <% end %>
-            
-            <%= button_to up_to_pin_path(id: pin_id), method: :patch, class: 'btn btn-primary px-3 me-1' do %>
-              <i class="fa-solid fa-up-long"></i>
-            <% end %>
-            <%= button_to down_to_pin_path(id: pin_id), method: :patch, class: 'btn btn-primary px-3 me-1' do %>
-              <i class="fa-solid fa-down-long"></i>
-            <% end %>
-        <% else %>
-            <%= button_to pins_path(post_id: @post.id), method: :post, class: 'btn btn-primary px-3 me-1' do %>
-              <i class="fa-solid fa-thumbtack"></i>
-            <% end %>
+        <% if @current_user %>          
+          <% if pin? %>
+              <%= button_to pin_path(id: pin_id), method: :delete, class: 'btn btn-primary px-3 me-1',
+                                                  form: { data: { turbo_confirm: "Are you sure?" } },
+                                                  style: 'color: white; background-color: #ff6b6b;' do %>
+                <i class="fa-solid fa-thumbtack"></i>
+              <% end %>
+              
+              <%= button_to up_to_pin_path(id: pin_id), method: :patch, class: 'btn btn-primary px-3 me-1' do %>
+                <i class="fa-solid fa-up-long"></i>
+              <% end %>
+              <%= button_to down_to_pin_path(id: pin_id), method: :patch, class: 'btn btn-primary px-3 me-1' do %>
+                <i class="fa-solid fa-down-long"></i>
+              <% end %>
+          <% else %>
+              <%= button_to pins_path(post_id: @post.id), method: :post, class: 'btn btn-primary px-3 me-1' do %>
+                <i class="fa-solid fa-thumbtack"></i>
+              <% end %>
+          <% end %>
         <% end %>
       </div>
-
     </div>
   </section>
 
-    <section>
-      <div>
-        <%= @post.content %>
+    <section class='flex flex-row justify-content-center'>
+      <div >
+        <h2 class='text-center'><%= @post.title %></h2>
+
+        
+        <% if @post.content.body.attachables.present? %>
+          <% attachment = @post.content.body.attachables.first %>
+          <% if attachment.image? %>
+            <%= image_tag attachment, height: '300', width: '200' %>
+          <% elsif attachment.video? %>
+            <%= video_tag url_for(attachment), preload: "auto", controls: "controls", width: "640", height: "360" %>
+          <% end %>
+        <% end %>
+        
+
+        <div class='pt-4' data-controller="read-more" data-read-more-more-text-value="Read more" data-read-more-less-text-value="Read less" style='transition: all 2s;'>
+          <p data-read-more-target="content"><%= truncate(strip_tags(@post.content.to_s), length: 150) %></p>
+          <div class="accordion accordion-flush" id="accordionFlushExample" style='border: solid black 2px;'>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="flush-headingOne">
+                <button data-action="read-more#toggle" class='accordion-button collapsed'  data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false">Read more</button>
+              </h2>
+            </div>
+          </div>
+
+          <template data-read-more-target="full" style='transition: 2s'>
+            <%= @post.content %>
+           </template>
+        </div>
       </div>
     </section>
+
+    <hr>
   </div>

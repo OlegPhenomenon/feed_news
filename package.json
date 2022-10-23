@@ -12,6 +12,7 @@
     "dropzone": "^6.0.0-beta.2",
     "esbuild": "^0.15.12",
     "sass": "^1.55.0",
+    "stimulus-read-more": "^3.0.0",
     "trix": "^2.0.0-beta.0"
   },
   "scripts": {

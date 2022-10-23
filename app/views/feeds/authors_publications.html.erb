@@ -1,7 +1,7 @@
   <main class="mt-4 mb-5">
     <div class="container">
-      <div class="row mb-4">
-        <%= form_with url: root_path,
+      <div class="row">
+        <%#= form_with url: root_path,
                       method: :get, 
                       data: { 
                         controller: 'debounce',
@@ -14,29 +14,18 @@
         <%#= f.search_field :title, value: params[:title],
                           class: 'block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm',
                           placeholder: "#{t('products.index.placeholder')}" %>
-        <div class='col-3'>
-          <div class='form-floating'>
-            <%= f.select :sort_by, 
-                      options_for_select([['Oldest', :published_at_asc],
-                                          ['Newest', :published_at_desc]],
-                                          selected: session[:published]&.to_sym || :published_at_asc),
-                      { }, { class: 'form-select'} %>
-            <%= f.label :sort_by, 'Sort by published' %>
-          </div>
-        </div>
-        <% end %>
+
+        <%#= f.select :sort_by, 
+                  options_for_select([['Oldest', :published_at_asc],
+                                      ['Newest', :published_at_desc]],
+                                      selected: session[:published]&.to_sym || :published_at_asc),
+                  { }, { class: ''} %>
+
+
+        <%# end %>
                             
       </div>
-
-      <hr>
-
       <div class="row">
-          <% if user_signed_in? && current_user&.pins.present? %>
-            <% current_user.pins.order(position: :asc).each do |pin| %>
-              <%= render partial: 'post', locals: { post: pin.post, pin: pin } %>
-            <% end %>
-          <% end %>
-
         <%= turbo_frame_tag 'posts' do %>
           <% @posts.each do |post| %>
             <%= render partial: 'post', locals: { post: post, pin: nil } %>

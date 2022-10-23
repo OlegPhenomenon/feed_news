@@ -3,6 +3,7 @@
 // ./bin/rails generate stimulus controllerName
 
 import { application } from "./application"
+import ReadMore from 'stimulus-read-more'
 
 import DropzoneController from "./dropzone_controller.js"
 application.register("dropzone", DropzoneController)
@@ -12,3 +13,5 @@ application.register("turbo_modal", TurboModalController)
 
 import DebounceController from "./debounce_controller.js"
 application.register("debounce", DebounceController)
+
+application.register('read-more', ReadMore)

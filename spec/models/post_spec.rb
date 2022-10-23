@@ -187,5 +187,56 @@ RSpec.describe Post, type: :model do
 
       expect(draft_post1.published_at).not_to be_nil
     end
+
+    it 'should keep published_at value from the first time' do
+      draft_post1.update(status: 2)
+
+      expect(draft_post1.published_at).not_to be_nil
+      published_timestap = draft_post1.published_at
+
+      draft_post1.update(status: 1)
+      draft_post1.update(status: 2)
+
+      expect(draft_post1.published_at).to be published_timestap
+    end
+  end
+
+  describe 'validations' do
+    let(:draft_post) { build(:post, status: 0, user: user) }
+
+    it 'should create post without title, but with content' do
+      draft_post.title = ''
+      draft_post.content = '<p>Hello, World!</p>'
+      expect(draft_post).to be_valid
+      expect(draft_post.save).to be true
+    end
+
+    it 'shoud return an error if content and title are empty' do
+      draft_post.title = ''
+      draft_post.content = ''
+
+      expect(draft_post).to_not be_valid
+      expect(draft_post.errors.messages[:base]).to include(I18n.t('posts.errors.body_mandatory'))
+    end
+
+    # it 'shoud not return attaches post without title' do
+    #   # p.content.body.attachments
+    #   # file = Rails.root.join('spec', 'support', 'assets', 'shipment_item', 'wine-box.jpeg')
+    #   # image = ActiveStorage::Blob.create_after_upload!( io: File.open(file, 'rb'),  filename: 'wine-box.jpeg',  content_type: 'image/jpeg' 
+    #   # Or figure it out from `name` if you have non-JPEGs).signed_id  shipment_item = ShipmentItem.new(image: image)  expect(shipment_item.valid?).to eq true
+
+    #    #<ActionText::Attachment attachable=#<ActiveStorage::Blob id: 50, key: "kuwnim8qtpozrfe9p7ijcr9kpgaq", filename: "22.jpg", content_type: "image/jpeg", metadata: {"identified"=>true, "width"=>6016, "height"=>4016, "analyzed"=>true}, service_name: "local", byte_size: 2729023, checksum: "mJx1s+fx76lHxWzpMsZtCQ==", created_at: "2022-10-23 08:09:02.323994000 +0000">>] 
+
+    #   file = Rails.root.join('spec', 'support', 'assets', 'default_image.png')
+    #   image = ActiveStorage::Blob.create_and_upload!(io: File.open(file, 'rb'), filename: 'defalt_image.png', content_type: 'image/jpepng')
+    #   draft_post.content = ''
+    #   draft_post.content.body.attachables.grep(image).uniq
+    #   draft_post.save
+    #   p '----'
+    #   p draft_post.errors
+    #   p draft_post.content.body.attachments
+    #   p '----'
+    #   p draft_post.content.to_plain_text
+    # end
   end
 end
