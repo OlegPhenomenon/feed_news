@@ -1,0 +1,49 @@
+  <div class="col-md-8 mb-4 <%= pin? ? cycle("indigo-bg", "blue-bg", "purple-bg", "orange-bg", "teal-bg")  : 'transparent' %>">
+  <!--Section: Post data-mdb-->
+  <section class="border-bottom mb-4">
+
+    <div class="row align-items-center mb-4">
+      <div class="col-lg-6 text-center text-lg-start mb-3 m-lg-0">
+        <%= image_tag @current_user&.avatar, class: 'rounded-5 shadow-1-strong me-2', height: 35 if @current_user&.avatar&.attached? %>
+        <%= post_budget %>
+      </div>
+
+      <div class="col-lg-6 text-center text-lg-end" style="display: flex">
+        <%= button_to edit_post_path(@post), method: :get, class: 'btn btn-primary px-3 me-1' do %>
+          <i class="fa-solid fa-pen-to-square"></i>
+        <% end %>
+        <%= button_to post_path(@post), method: :delete, class: 'btn btn-primary px-3 me-1',
+                                                  form: { data: { turbo_confirm: "Are you sure?" } },
+                                                  style: 'color: white; background-color: #ff6b6b;' do %>
+          <i class="fa-solid fa-trash"></i>
+        <% end %>
+        
+        <% if pin? %>
+            <%= button_to pin_path(id: pin_id), method: :delete, class: 'btn btn-primary px-3 me-1',
+                                                form: { data: { turbo_confirm: "Are you sure?" } },
+                                                style: 'color: white; background-color: #ff6b6b;' do %>
+              <i class="fa-solid fa-thumbtack"></i>
+            <% end %>
+            
+            <%= button_to up_to_pin_path(id: pin_id), method: :patch, class: 'btn btn-primary px-3 me-1' do %>
+              <i class="fa-solid fa-up-long"></i>
+            <% end %>
+            <%= button_to down_to_pin_path(id: pin_id), method: :patch, class: 'btn btn-primary px-3 me-1' do %>
+              <i class="fa-solid fa-down-long"></i>
+            <% end %>
+        <% else %>
+            <%= button_to pins_path(post_id: @post.id), method: :post, class: 'btn btn-primary px-3 me-1' do %>
+              <i class="fa-solid fa-thumbtack"></i>
+            <% end %>
+        <% end %>
+      </div>
+
+    </div>
+  </section>
+
+    <section>
+      <div>
+        <%= @post.content %>
+      </div>
+    </section>
+  </div>

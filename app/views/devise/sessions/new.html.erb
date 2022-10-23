@@ -1,0 +1,26 @@
+<%= render 'shared/turbo_modal' do %>
+    
+<main class="form-signin">
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+    <div class="form-floating">
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control', id: 'float_input', placeholder: 'name@example.com' %>
+      <%= f.label :floating_input %><br />
+    </div>
+    <div class="form-floating">
+        <%= f.password_field :password, autofocus: true, autocomplete: "current-password", class: 'form-control', id: 'float_password', placeholder: 'Password123' %>
+        <%= f.label :floating_password %><br />
+    </div>
+
+    <div class="checkbox mb-3">
+      <% if devise_mapping.rememberable? %>
+        <%= f.label :remember_me, 'Remember me' %>
+        <%= f.check_box :remember_me %>
+      <% end %>
+    </div>
+
+    <%= f.submit "Log in", class: 'w-100 btn btn-lg btn-primary' %>
+  <% end %>
+</main>
+<% end %>
