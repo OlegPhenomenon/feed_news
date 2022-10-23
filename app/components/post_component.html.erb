@@ -28,7 +28,7 @@
         
         <% if @current_user %>          
           <% if pin? %>
-              <%= button_to pin_path(id: pin_id), method: :delete, class: 'btn btn-primary px-3 me-1',
+              <%= button_to pin_path(id: pin_id, author: @author), method: :delete, class: 'btn btn-primary px-3 me-1',
                                                   form: { data: { turbo_confirm: "Are you sure?" } },
                                                   style: 'color: white; background-color: #ff6b6b;' do %>
                 <i class="fa-solid fa-thumbtack"></i>

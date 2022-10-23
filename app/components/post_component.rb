@@ -4,12 +4,13 @@ class PostComponent < ViewComponent::Base
   include ActionView::Helpers::TagHelper
   include ActionView::Context
 
-  attr_reader :post, :current_user, :pin
+  attr_reader :post, :current_user, :pin, :author
 
-  def initialize(post:, current_user:, pin:)
+  def initialize(post:, current_user:, pin:, author:)
     @post = post
     @current_user = current_user
     @pin = pin
+    @author = author
   end
 
   def pin_id

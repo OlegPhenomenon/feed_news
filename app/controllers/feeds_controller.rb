@@ -17,10 +17,7 @@ class FeedsController < ApplicationController
 
     author = User.find(params[:id])
 
-    # sql = "SELECT pins.* FROM pins WHERE user_id = #{author.id} INNER JOIN"
-    @pins = current_user.pins.joins(:post).where(user_id: author.id)
-
-    # @pins = ActiveRecord::Base.connection.execute(sql)
+    @pins = current_user.pins.includes(:post).where(post: { user_id: author.id})
     @pagy, @posts = pagy(Post.where(user: author)
                              .search(nil, params)
                              .without_user_pins(current_user),
