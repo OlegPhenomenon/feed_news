@@ -5,3 +5,5 @@ en:
       duplicate_pin: You already pin this post
     controller:
       created: Pin was created
+    servie:
+      no_element: 'No element'

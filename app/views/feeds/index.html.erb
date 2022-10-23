@@ -11,9 +11,6 @@
                         action: 'input->debounce#search' 
                             }, class: "divide-y divide-gray-200 space-y-10" do |f| %>
 
-        <%#= f.search_field :title, value: params[:title],
-                          class: 'block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm',
-                          placeholder: "#{t('products.index.placeholder')}" %>
         <div class='col-3'>
           <div class='form-floating'>
             <%= f.select :sort_by, 
@@ -33,14 +30,12 @@
       <div class="row">
         <%= turbo_frame_tag 'pins' do %>
           <% if user_signed_in? && current_user&.pins.present? %>
-            <% @pins.each do |pin| %>
-              <%= render partial: 'post', locals: { post: pin.post, pin: pin } %>
-            <% end %>
+            <%= render partial: 'feeds/pins', locals: { pins: @pins } %>
           <% end %>
         <% end %>
 
         <%= turbo_frame_tag 'posts' do %>
-            <%= render partial: 'feeds/posts', locals: { posts: @posts } %>
+            <%= render partial: 'feeds/posts', locals: { posts: @posts} %>
 
             <% if @pagy.pages > 1 %>
               <div class="footer text-center mt-4" id="pagy">

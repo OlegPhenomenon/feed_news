@@ -1,0 +1,3 @@
+<% pins.each do |pin| %>
+  <%= render partial: 'feeds/post', locals: { post: pin.post, pin: pin } %>
+<% end %>

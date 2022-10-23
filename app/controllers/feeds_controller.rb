@@ -16,7 +16,14 @@ class FeedsController < ApplicationController
     params[:sort_by] = session[:author_published] || ''
 
     author = User.find(params[:id])
-    @pagy, @posts = pagy(Post.where(user: author, status: 2).search(current_user, params),
+
+    # sql = "SELECT pins.* FROM pins WHERE user_id = #{author.id} INNER JOIN"
+    @pins = current_user.pins.joins(:post).where(user_id: author.id)
+
+    # @pins = ActiveRecord::Base.connection.execute(sql)
+    @pagy, @posts = pagy(Post.where(user: author)
+                             .search(nil, params)
+                             .without_user_pins(current_user),
                          items: params[:per_page] ||= 15,
                          link_extra: 'data-turbo-action="advance"')
   end

@@ -17,7 +17,7 @@ module Pins
       pin = Pin.new user: user, post_id: post_id
       pin.position = user.pins? ? user.pins.last.position + 1 : 0
 
-      pin.save ? struct_object(success: true, instance: pin) : struct_object(success: true, errors: pin.errors.full_messages.join('; '))
+      pin.save ? struct_object(success: true, instance: pin) : struct_object(success: false, errors: pin.errors.full_messages.join('; '))
     end
   end
 end
