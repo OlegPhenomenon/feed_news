@@ -2,22 +2,56 @@ class PinsController < ApplicationController
   before_action :set_pin, only: [:up_to, :down_to, :destroy]
 
   def create
-    p = Pin.new user: current_user, post_id: params[:post_id]
+    result = Pins::CreateService.call(user: current_user, post_id: params[:post_id])
 
-    if current_user.pins?
-      p.position = current_user.pins.last.position + 1
-    else
-      p.position = 0
+    respond_to do |format|
+      format.turbo_stream do
+        if result.success?
+          flash.now[:notice] = I18n.t('pins.controller.created')
+
+          session[:published] = params[:sort_by].to_s if params[:sort_by].present?
+          params[:sort_by] = session[:published] || ''
+
+          render turbo_stream: [
+            render_turbo_flash,
+            turbo_stream.remove(result.instance.post),
+            turbo_stream.append('pins', partial: 'feeds/post', locals: { post: result.instance.post,
+                                                                         pin: result.instance })
+           ]
+        else
+          flash.now[:alert] = result.errors
+          render turbo_stream: [
+            render_turbo_flash
+          ]
+        end
+      end
     end
-    p.save!
-
-    redirect_to root_path
   end
 
   def destroy
-    @pin.destroy
+    post = @pin.post
 
-    redirect_to root_path
+    respond_to do |format|
+      format.turbo_stream do
+        if @pin.destroy
+          session[:published] = params[:sort_by].to_s if params[:sort_by].present?
+          params[:sort_by] = session[:published] || ''
+          @pagy, @posts = pagy(Post.search(current_user, params),
+                         items: params[:per_page] ||= 15,
+                         link_extra: 'data-turbo-action="advance"')
+
+          render turbo_stream: [
+            turbo_stream.remove(post),
+            turbo_stream.update('posts', partial: 'feeds/posts', locals: { posts: @posts })
+          ]
+        else
+          flash.now[:alert] = result.errors
+          render turbo_stream: [
+            render_turbo_flash
+          ]
+        end
+      end
+    end
   end
 
   def up_to
@@ -39,10 +73,6 @@ class PinsController < ApplicationController
     redirect_to root_path and return if current_user.pins.maximum(:position) == @pin.position
 
     previous_element = current_user.pins.where('position > ?', @pin.position).order("position ASC").first
-    p '--'
-    p previous_element.position
-    p @pin.position
-    p '--'
     redirect_to root_path and return if previous_element.nil?
 
     previous_element.position, @pin.position = @pin.position, previous_element.position

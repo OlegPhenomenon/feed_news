@@ -1,28 +1,58 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:edit, :update, :destroy]
+  include Pagy::Frontend
+
+  before_action :set_post, only: %i[edit update destroy]
 
   def new
     @post = current_user.posts.build
   end
 
   def create
-    @post = current_user.posts.create post_params.to_h
+    @post = current_user.posts.build post_params
 
-    redirect_to root_path
+    if @post.save
+      flash.now[:notice] = I18n.t('posts.controller.created')
+      redirect_to root_path
+    else
+      flash.now[:alert] = @post.errors.full_messages.join('; ')
+      redirect_to edit_post_path
+    end
   end
 
   def edit; end
 
   def update
-    @post.update post_params.to_h
-
-    redirect_to root_path
+    if @post.update post_params
+      flash.now[:notice] = I18n.t('posts.controller.updated')
+      redirect_to root_path
+    else
+      flash.now[:alert] = @post.errors.full_messages.join('; ')
+      redirect_to edit_post_path
+    end
   end
 
   def destroy
-    @post.destroy
+    title = I18n.t('posts.controller.removed', value: @post.title.present? ? "title #{@post.title}" : "id #{@post.id}")
 
-    redirect_to root_path
+    respond_to do |format|
+      if @post.destroy
+        flash.now[:alert] = title
+
+        format.turbo_stream do
+          render turbo_stream: [
+            render_turbo_flash,
+            turbo_stream.remove(@post)
+          ]
+        end
+      else
+        format.turbo_stream do
+          flash.now[:alert] = @post.errors.full_messages.join('; ')
+          render turbo_stream: [
+            render_turbo_flash
+          ]
+        end
+      end
+    end
   end
 
   private

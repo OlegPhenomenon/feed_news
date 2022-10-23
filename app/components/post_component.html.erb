@@ -1,9 +1,15 @@
-  <div class="mb-4 <%= pin? ? cycle("indigo-bg", "blue-bg", "purple-bg", "orange-bg", "teal-bg")  : 'transparent' %> p-3 rounded shadow">
+  <div class="mb-4 <%= pin? ? cycle("blue-bg", "purple-bg", "indigo-bg", "orange-bg", "teal-bg")  : 'transparent' %> p-3 rounded shadow" id="<%= dom_id(@post)%>">
 
   <section class="border-bottom mb-4">
     <div class="row align-items-end mb-4">
       <div class="col-lg-9 text-center text-lg-start mb-3 m-lg-0">
-        <%= image_tag @current_user&.avatar, class: 'rounded-5 shadow-1-strong me-2', height: 35 if @current_user&.avatar&.attached? %>
+        
+        <% if @post&.user&.avatar&.attached? %>
+          <%= image_tag @post.user&.avatar, class: 'rounded-5 shadow-1-strong me-2', height: 35 %>
+        <% else %>
+          <%= image_tag url_for('default_image.png'), class: 'rounded-5 shadow-1-strong me-2', height: 35 %>
+        <% end %>
+        
         <%= post_budget %>
       </div>
 

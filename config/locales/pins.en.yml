@@ -3,3 +3,5 @@ en:
     index:
     errors:
       duplicate_pin: You already pin this post
+    controller:
+      created: Pin was created

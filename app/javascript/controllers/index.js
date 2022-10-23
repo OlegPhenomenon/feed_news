@@ -14,4 +14,7 @@ application.register("turbo_modal", TurboModalController)
 import DebounceController from "./debounce_controller.js"
 application.register("debounce", DebounceController)
 
+import ToastController from "./toast_controller.js"
+application.register("toast", ToastController)
+
 application.register('read-more', ReadMore)

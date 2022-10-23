@@ -14,8 +14,12 @@
   </head>
 
   <body style='background-color: #ddd;'>
+
     <%= render 'shared/navbar' %>
     <%= turbo_frame_tag "modal" %>
+    <turbo-frame id="flash">
+      <%= render 'shared/flash' %>
+    </turbo-frame>
 
     <main class='container p-3 rounded mt-4' style='background-color: white;'>
       <%= yield %>
