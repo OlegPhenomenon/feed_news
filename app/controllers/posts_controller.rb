@@ -9,30 +9,46 @@ class PostsController < ApplicationController
 
   def create
     @post = current_user.posts.build post_params
+    authorize! :create, @post
 
     if @post.save
       flash.now[:notice] = I18n.t('posts.controller.created')
       redirect_to root_path
     else
-      flash.now[:alert] = @post.errors.full_messages.join('; ')
-      redirect_to edit_post_path
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:alert] = @post.errors.full_messages.join('; ')
+          render turbo_stream: [
+            render_turbo_flash
+          ]
+        end
+      end
     end
   end
 
   def edit; end
 
   def update
+    authorize! :update, @post
+
     if @post.update post_params
       flash.now[:notice] = I18n.t('posts.controller.updated')
       redirect_to root_path
     else
-      flash.now[:alert] = @post.errors.full_messages.join('; ')
-      redirect_to edit_post_path
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:alert] = @post.errors.full_messages.join('; ')
+          render turbo_stream: [
+            render_turbo_flash
+          ]
+        end
+      end
     end
   end
 
   def destroy
     title = I18n.t('posts.controller.removed', value: @post.title.present? ? "title #{@post.title}" : "id #{@post.id}")
+    authorize! :destroy, @post
 
     respond_to do |format|
       if @post.destroy

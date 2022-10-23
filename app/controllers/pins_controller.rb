@@ -45,6 +45,8 @@ class PinsController < ApplicationController
   end
 
   def destroy
+    authorize! :destroy, @pin
+
     post = @pin.post
     respond_to do |format|
       format.turbo_stream do
@@ -78,11 +80,15 @@ class PinsController < ApplicationController
   end
 
   def up_to
+    authorize! :up_to, @pin
+
     result = Pins::MovePinService.move_up(user: current_user, pin: @pin)
     rendering_move_result(result)
   end
 
   def down_to
+    authorize! :down_to, @pin
+
     result = Pins::MovePinService.move_down(user: current_user, pin: @pin)
     rendering_move_result(result)
   end
