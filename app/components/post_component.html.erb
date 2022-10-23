@@ -1,4 +1,4 @@
-  <div class="mb-4 <%= pin? ? cycle("blue-bg", "purple-bg", "indigo-bg", "orange-bg", "teal-bg")  : 'transparent' %> p-3 rounded shadow" id="<%= dom_id(@post)%>">
+  <div class="mb-4 p-3 rounded shadow" id="<%= dom_id(@post)%>" style="background-color: <%= pin? ? @pin.bg_color : 'transparent' %>">
 
   <section class="border-bottom mb-4">
     <div class="row align-items-end mb-4">
@@ -41,7 +41,7 @@
                 <i class="fa-solid fa-down-long"></i>
               <% end %>
           <% else %>
-              <%= button_to pins_path(post_id: @post.id), method: :post, class: 'btn btn-primary px-3 me-1' do %>
+              <%= button_to pins_path(post_id: @post.id, author: @author), method: :post, class: 'btn btn-primary px-3 me-1' do %>
                 <i class="fa-solid fa-thumbtack"></i>
               <% end %>
           <% end %>
@@ -50,19 +50,20 @@
     </div>
   </section>
 
-    <section class='flex flex-row justify-content-center'>
+    <section class='flex flex-row justify-content-center' data-controller='present_handler'>
       <div >
         <h2 class='text-center'><%= @post.title %></h2>
 
-        
-        <% if @post.content.body.attachables.present? %>
-          <% attachment = @post.content.body.attachables.first %>
-          <% if attachment.image? %>
-            <%= image_tag attachment, height: '300', width: '200' %>
-          <% elsif attachment.video? %>
-            <%= video_tag url_for(attachment), preload: "auto", controls: "controls", width: "640", height: "360" %>
+        <div id='present'>
+          <% if @post.content.body.attachables.present? %>
+            <% attachment = @post.content.body.attachables.first %>
+            <% if attachment.image? %>
+              <%= image_tag attachment, height: '300', width: '200' %>
+            <% elsif attachment.video? %>
+              <%= video_tag url_for(attachment), preload: "auto", controls: "controls", width: "640", height: "360" %>
+            <% end %>
           <% end %>
-        <% end %>
+        </div>
         
 
         <div class='pt-4' data-controller="read-more" data-read-more-more-text-value="Read more" data-read-more-less-text-value="Read less" style='transition: all 2s;'>
@@ -70,7 +71,11 @@
           <div class="accordion accordion-flush" id="accordionFlushExample" style='border: solid black 2px;'>
             <div class="accordion-item">
               <h2 class="accordion-header" id="flush-headingOne">
-                <button data-action="read-more#toggle" class='accordion-button collapsed'  data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false">Read more</button>
+                <button data-action="read-more#toggle click->present_handler#togglePresenter"
+                        class='accordion-button collapsed'
+                        data-bs-toggle="collapse"
+                        data-bs-target="#flush-collapseOne"
+                        aria-expanded="false">Read more</button>
               </h2>
             </div>
           </div>

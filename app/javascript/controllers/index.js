@@ -17,4 +17,7 @@ application.register("debounce", DebounceController)
 import ToastController from "./toast_controller.js"
 application.register("toast", ToastController)
 
+import PresentHandlerController from "./present_handler_controller.js"
+application.register("present_handler", PresentHandlerController)
+
 application.register('read-more', ReadMore)

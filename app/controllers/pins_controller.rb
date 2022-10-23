@@ -22,7 +22,7 @@ class PinsController < ApplicationController
             turbo_stream.remove(result.instance.post),
             turbo_stream.prepend('pins', partial: 'feeds/post', locals: { post: result.instance.post,
                                                                           pin: result.instance,
-                                                                          author: false})
+                                                                          author: params['author'] == 'true'})
           ]
         else
           flash.now[:alert] = result.errors
@@ -56,7 +56,7 @@ class PinsController < ApplicationController
 
           posts = if params['author'] == 'true'
                     Post.where(user: post.author)
-                        .search(nil, params)
+                        .search(current_user, params)
                         .without_user_pins(current_user)
                   else
                     Post.search(current_user, params)
@@ -66,7 +66,7 @@ class PinsController < ApplicationController
 
           render turbo_stream: [
             turbo_stream.remove(post),
-            turbo_stream.update('posts', partial: 'feeds/posts', locals: { posts: @posts, author: false }),
+            turbo_stream.update('posts', partial: 'feeds/posts', locals: { posts: @posts, author: params['author'] == 'true' }),
             turbo_stream.update('pagy', html: pagy_nav(@pagy).to_s.html_safe)
           ]
         else
@@ -113,7 +113,7 @@ class PinsController < ApplicationController
         if result.success?
           @pins = current_user.pins.order(position: :asc)
           render turbo_stream: [
-            turbo_stream.update('pins', partial: 'feeds/pins', locals: { pins: @pins, author: false })
+            turbo_stream.update('pins', partial: 'feeds/pins', locals: { pins: @pins, author: params['author'] == 'true' })
           ]
         else
           flash.now[:alert] = result.errors
