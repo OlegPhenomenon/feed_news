@@ -4,6 +4,7 @@ class PostComponent < ViewComponent::Base
   include ActionView::Helpers::TagHelper
   include ActionView::Context
 
+  renders_one :avatar
   renders_one :pinned_actions
   renders_one :author_actions
   renders_one :present_window

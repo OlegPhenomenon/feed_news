@@ -5,5 +5,9 @@ module Common
     def initialize(post:)
       @post = post
     end
+
+    def no_render_compomnent?
+      post.content.body.attachables.count == 1 && !post.body_text_contain_validator
+    end
   end
 end

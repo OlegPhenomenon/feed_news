@@ -3,17 +3,9 @@
   <section class="border-bottom mb-4">
     <div class="row align-items-end mb-4">
       <div class="col-lg-9 text-center text-lg-start mb-3 m-lg-0">
-        
-        <% if @post&.user&.avatar&.attached? %>
-          <%= image_tag @post.user&.avatar, class: 'rounded-5 shadow-1-strong me-2', height: 35 %>
-        <% else %>
-          <%= image_tag url_for('default_image.png'), class: 'rounded-5 shadow-1-strong me-2', height: 35 %>
-        <% end %>
-        
+        <%= avatar %>
         <%= post_budget %>
       </div>
-
-      <h1><%= @author %></h1>
 
       <div class="col-lg-3 text-center text-lg-end" style="display: flex">
         <%= author_actions if @current_user && current_user_is_author? %>
