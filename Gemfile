@@ -77,6 +77,7 @@ group :test do
   gem 'database_cleaner-active_record'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'simplecov', require: false
 end
 
 gem 'devise', '~> 4.8'

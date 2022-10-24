@@ -13,39 +13,18 @@
         <%= post_budget %>
       </div>
 
+      <h1><%= @author %></h1>
+
       <div class="col-lg-3 text-center text-lg-end" style="display: flex">
-        
-        <% if @current_user && current_user_is_author? %>    
-          <%= button_to edit_post_path(@post), method: :get, class: 'btn btn-primary px-3 me-1' do %>
-            <i class="fa-solid fa-pen-to-square"></i>
-          <% end %>
-          <%= button_to post_path(@post), method: :delete, class: 'btn btn-primary px-3 me-1',
-                                                    form: { data: { turbo_confirm: "Are you sure?" } },
-                                                    style: 'color: white; background-color: #ff6b6b;' do %>
-            <i class="fa-solid fa-trash"></i>
-          <% end %>
+        <%= author_actions if @current_user && current_user_is_author? %>
+        <%= pinned_actions if pin? && @current_user %>
+
+        <% if @current_user && !pin? %>
+            <%= button_to pins_path(post_id: @post.id, author: @author), method: :post, class: 'btn btn-primary px-3 me-1' do %>
+              <i class="fa-solid fa-thumbtack"></i>
+            <% end %>
         <% end %>
-        
-        <% if @current_user %>          
-          <% if pin? %>
-              <%= button_to pin_path(id: pin_id, author: @author), method: :delete, class: 'btn btn-primary px-3 me-1',
-                                                  form: { data: { turbo_confirm: "Are you sure?" } },
-                                                  style: 'color: white; background-color: #ff6b6b;' do %>
-                <i class="fa-solid fa-thumbtack"></i>
-              <% end %>
-              
-              <%= button_to up_to_pin_path(id: pin_id), method: :patch, class: 'btn btn-primary px-3 me-1' do %>
-                <i class="fa-solid fa-up-long"></i>
-              <% end %>
-              <%= button_to down_to_pin_path(id: pin_id), method: :patch, class: 'btn btn-primary px-3 me-1' do %>
-                <i class="fa-solid fa-down-long"></i>
-              <% end %>
-          <% else %>
-              <%= button_to pins_path(post_id: @post.id, author: @author), method: :post, class: 'btn btn-primary px-3 me-1' do %>
-                <i class="fa-solid fa-thumbtack"></i>
-              <% end %>
-          <% end %>
-        <% end %>
+
       </div>
     </div>
   </section>
@@ -55,35 +34,10 @@
         <h2 class='text-center'><%= @post.title %></h2>
 
         <div id='present'>
-          <% if @post.content.body.attachables.present? %>
-            <% attachment = @post.content.body.attachables.first %>
-            <% if attachment.image? %>
-              <%= image_tag attachment, height: '300', width: '200' %>
-            <% elsif attachment.video? %>
-              <%= video_tag url_for(attachment), preload: "auto", controls: "controls", width: "640", height: "360" %>
-            <% end %>
-          <% end %>
+          <%= present_window %>
         </div>
         
-
-        <div class='pt-4' data-controller="read-more" data-read-more-more-text-value="Read more" data-read-more-less-text-value="Read less" style='transition: all 2s;'>
-          <p data-read-more-target="content"><%= truncate(strip_tags(@post.content.to_s), length: 150) %></p>
-          <div class="accordion accordion-flush" id="accordionFlushExample" style='border: solid black 2px;'>
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="flush-headingOne">
-                <button data-action="read-more#toggle click->present_handler#togglePresenter"
-                        class='accordion-button collapsed'
-                        data-bs-toggle="collapse"
-                        data-bs-target="#flush-collapseOne"
-                        aria-expanded="false">Read more</button>
-              </h2>
-            </div>
-          </div>
-
-          <template data-read-more-target="full" style='transition: 2s'>
-            <%= @post.content %>
-           </template>
-        </div>
+        <%= read_more %>
       </div>
     </section>
 

@@ -92,6 +92,7 @@ RSpec.describe Post, type: :model do
       let(:published_post1) { create(:post, status: 2, user: user) }
       let(:published_post2) { create(:post, status: 2, user: user) }
       let(:published_post3) { create(:post, status: 2, user: user) }
+      let(:pin) { build(:pin) }
 
       before(:each) do
         published_post1.reload
@@ -101,7 +102,10 @@ RSpec.describe Post, type: :model do
       end
 
       it 'should return list of posts what not were added as pin' do
-        Pin.create(user_id: user.id, post_id: published_post1.id, position: 0)
+        pin.user_id = user.id
+        pin.post_id = published_post1.id
+        pin.position = 0
+        pin.save
 
         expect(Post.without_user_pins(user).count).to eq 2
       end
@@ -145,18 +149,18 @@ RSpec.describe Post, type: :model do
       expect(result).to be_empty
     end
 
-    it 'should not return author draft posts for another user' do
-      published_post1.update(status: 0)
-      title = published_post1.title
-      params[:title] = title
+    # it 'should not return author draft posts for another user' do
+    #   published_post1.update(status: 0)
+    #   title = published_post1.title
+    #   params[:title] = title
 
-      expect(published_post1.draft?).to be_truthy
-      expect(published_post1.user).to eq user
+    #   expect(published_post1.draft?).to be_truthy
+    #   expect(published_post1.user).to eq user
 
-      result = Post.search(second_user, params)
+    #   result = Post.search(second_user, params)
 
-      expect(result).to be_empty
-    end
+    #   expect(result).to be_empty
+    # end
   end
 
   describe 'callbacks' do

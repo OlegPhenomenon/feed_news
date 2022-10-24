@@ -1,4 +1,8 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
+require 'simplecov'
+SimpleCov.start do
+  add_group 'Multiple Files', ['app/models', 'app/controllers', 'app/components', 'app/services']
+end
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
@@ -30,11 +34,28 @@ rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
   exit 1
 end
+
+Rails.application.routes.default_url_options[:host] = 'localhost:3000'
+
 RSpec.configure do |config|
+  config.include Rails.application.routes.url_helpers
   config.include FactoryBot::Syntax::Methods
   config.include Devise::TestHelpers, type: :controller
   config.include Devise::TestHelpers, type: :view
+  config.include Devise::Test::ControllerHelpers, type: :component
+  config.include Devise::Test::ControllerHelpers, type: :view
   config.include Warden::Test::Helpers
+
+  config.before(:each, type: :component) do
+    @request = controller.request
+  end
+
+  # config.before(:each, type: :request) do
+  #   @request = controller.request
+  # end
+
+  config.include ViewComponent::TestHelpers, type: :component
+  config.include Capybara::RSpecMatchers, type: :component
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"

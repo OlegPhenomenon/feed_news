@@ -1,0 +1,17 @@
+<div class='pt-4' data-controller="read-more" data-read-more-more-text-value="Read more" data-read-more-less-text-value="Read less" style='transition: all 2s;'>
+  <p data-read-more-target="content"><%= truncate(strip_tags(@post.content.to_s), length: 150) %></p>
+  <div class="accordion accordion-flush" id="accordionFlushExample" style='border: solid black 2px;'>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="flush-headingOne">
+        <button data-action="read-more#toggle click->present_handler#togglePresenter"
+          class='accordion-button collapsed'
+          data-bs-toggle="collapse"
+          data-bs-target="#flush-collapseOne"
+          aria-expanded="false">Read more</button>
+      </h2>
+    </div>
+  </div>
+  <template data-read-more-target="full" style='transition: 2s'>
+    <%= @post.content %>
+  </template>
+</div>

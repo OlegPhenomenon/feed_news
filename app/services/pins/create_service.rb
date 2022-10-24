@@ -15,7 +15,7 @@ module Pins
 
     def call
       pin = Pin.new user: user, post_id: post_id
-      pin.position = user.pins? ? user.pins.last.position + 1 : 0
+      pin.position = user.pins? ? user.pins.maximum(:position) + 1 : 0
       pin.bg_color = bg_colors.sample
 
       pin.save ? struct_object(success: true, instance: pin) : struct_object(success: false, errors: pin.errors.full_messages.join('; '))

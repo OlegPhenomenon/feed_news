@@ -1,0 +1,11 @@
+<%= render Common::ButtonActionComponent.new(method: :delete, url: pin_path(id: @pin.id, author: @author), color: '#ff6b6b') do %>
+  <i class="fa-solid fa-thumbtack"></i>
+<% end %>
+<%= link_to up_to_pin_path(id: @pin.id) + "?author=#{@author}", method: :patch, class: 'btn btn-primary px-3 me-1',
+                                                                   data: { turbo_method: :patch } do %>
+  <i class="fa-solid fa-up-long"></i>
+<% end %>
+<%= link_to down_to_pin_path(id: @pin.id) + "?author=#{@author}", method: :patch, class: 'btn btn-primary px-3 me-1',
+                                                                     data: { turbo_method: :patch } do %>
+  <i class="fa-solid fa-down-long"></i>
+<% end %>

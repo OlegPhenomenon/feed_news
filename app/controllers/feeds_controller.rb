@@ -17,7 +17,7 @@ class FeedsController < ApplicationController
 
     author = User.find(params[:id])
 
-    @pins = current_user&.pins&.includes(:post)&.where(post: { user_id: author.id})
+    @pins = current_user&.pins&.includes(:post)&.where(post: { user_id: author.id})&.order(position: :asc)
     @pagy, @posts = pagy(Post.where(user: author)
                              .search(current_user, params)
                              .without_user_pins(current_user),

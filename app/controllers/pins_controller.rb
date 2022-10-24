@@ -81,15 +81,15 @@ class PinsController < ApplicationController
 
   def up_to
     authorize! :up_to, @pin
+    result = Pins::MovePinService.move_up(user: current_user, pin: @pin, is_from_author: params['author'] == 'true')
 
-    result = Pins::MovePinService.move_up(user: current_user, pin: @pin)
     rendering_move_result(result)
   end
 
   def down_to
     authorize! :down_to, @pin
 
-    result = Pins::MovePinService.move_down(user: current_user, pin: @pin)
+    result = Pins::MovePinService.move_down(user: current_user, pin: @pin, is_from_author: params['author'] == 'true')
     rendering_move_result(result)
   end
 
@@ -108,10 +108,16 @@ class PinsController < ApplicationController
   end
 
   def rendering_move_result(result)
+    author = @pin.post.author
+
     respond_to do |format|
       format.turbo_stream do
         if result.success?
-          @pins = current_user.pins.order(position: :asc)
+          if params['author'] == 'true'
+            @pins = current_user&.pins&.includes(:post)&.where(post: { user_id: author.id})&.order(position: :asc)
+          else
+            @pins = current_user.pins.order(position: :asc)
+          end
           render turbo_stream: [
             turbo_stream.update('pins', partial: 'feeds/pins', locals: { pins: @pins, author: params['author'] == 'true' })
           ]
