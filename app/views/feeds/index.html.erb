@@ -32,13 +32,13 @@
       <div class="row">
         <%= turbo_frame_tag 'pins' do %>
           <% if user_signed_in? && current_user&.pins.present? %>
-            <%= render partial: 'feeds/pins', locals: { pins: @pins, author: false } %>
+            <%= render partial: 'feeds/pins', locals: { pins: @pins, author: false, user: current_user } %>
           <% end %>
         <% end %>
 
         <div id='posts_broadcast'>
           <%= turbo_frame_tag 'posts' do %>
-              <%= render partial: 'feeds/posts', locals: { posts: @posts, author: false } %>
+              <%= render partial: 'feeds/posts', locals: { posts: @posts, author: false, user: current_user } %>
 
               <% if @pagy.pages > 1 %>
                 <div class="footer text-center mt-4" id="pagy">

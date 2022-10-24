@@ -1,8 +1,10 @@
 <% if @post.content.body.attachables.present? %>
   <% attachment = @post.content.body.attachables.first %>
-  <% if attachment.image? %>
-    <%= image_tag attachment, height: '300', width: '200' %>
-  <% elsif attachment.video? %>
-    <%= video_tag url_for(attachment), preload: "auto", controls: "controls", width: "640", height: "360" %>
-  <% end %>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <% if attachment.image? %>
+      <%= image_tag url_for(attachment), height: '300', width: '230', style: 'object-fit: contain;' %>
+    <% elsif attachment.video? %>
+      <%= video_tag url_for(attachment), preload: "auto", controls: "controls", width: "640", height: "360" %>
+    <% end %>
+  </div>
 <% end %>

@@ -12,12 +12,11 @@ class PostsController < ApplicationController
     authorize! :create, @post
 
     if @post.save
-      flash.now[:notice] = I18n.t('posts.controller.created')
       Posts::CreateBroadcast.call({
                                     post: @post,
                                     user: @post.user
                                   })
-      redirect_to root_path
+      redirect_to root_path, notice: I18n.t('posts.controller.created')
     else
       respond_to do |format|
         format.turbo_stream do
@@ -36,8 +35,7 @@ class PostsController < ApplicationController
     authorize! :update, @post
 
     if @post.update post_params
-      flash.now[:notice] = I18n.t('posts.controller.updated')
-      redirect_to root_path
+      redirect_to root_path, notice: I18n.t('posts.controller.updated')
     else
       respond_to do |format|
         format.turbo_stream do

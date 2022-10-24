@@ -20,9 +20,10 @@ class PinsController < ApplicationController
           render turbo_stream: [
             render_turbo_flash,
             turbo_stream.remove(result.instance.post),
-            turbo_stream.prepend('pins', partial: 'feeds/post', locals: { post: result.instance.post,
-                                                                          pin: result.instance,
-                                                                          author: params['author'] == 'true'})
+            turbo_stream.append('pins', partial: 'feeds/post', locals: { post: result.instance.post,
+                                                                         pin: result.instance,
+                                                                         author: params['author'] == 'true',
+                                                                         user: current_user})
           ]
         else
           flash.now[:alert] = result.errors
@@ -63,10 +64,14 @@ class PinsController < ApplicationController
                   end
 
           @pagy, @posts = pagy(posts, items: params[:per_page] ||= 15, link_extra: 'data-turbo-action="advance"')
+          flash.now[:notice] = I18n.t('pins.controller.destroyed')
 
           render turbo_stream: [
+            render_turbo_flash,
             turbo_stream.remove(post),
-            turbo_stream.update('posts', partial: 'feeds/posts', locals: { posts: @posts, author: params['author'] == 'true' }),
+            turbo_stream.update('posts', partial: 'feeds/posts', locals: { posts: @posts,
+                                                                           author: params['author'] == 'true',
+                                                                           user: current_user }),
             turbo_stream.update('pagy', html: pagy_nav(@pagy).to_s.html_safe)
           ]
         else
@@ -118,8 +123,13 @@ class PinsController < ApplicationController
           else
             @pins = current_user.pins.order(position: :asc)
           end
+
+          flash.now[:notice] = I18n.t('pins.controller.moved')
           render turbo_stream: [
-            turbo_stream.update('pins', partial: 'feeds/pins', locals: { pins: @pins, author: params['author'] == 'true' })
+            render_turbo_flash,
+            turbo_stream.update('pins', partial: 'feeds/pins', locals: { pins: @pins,
+                                                                         author: params['author'] == 'true',
+                                                                         user: current_user })
           ]
         else
           flash.now[:alert] = result.errors

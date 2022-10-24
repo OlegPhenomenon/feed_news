@@ -5,5 +5,7 @@ en:
       duplicate_pin: You already pin this post
     controller:
       created: Pin was created
+      destroyed: Pin was destroyed
+      moved: Pin was moved
     service:
       no_element: 'No element'

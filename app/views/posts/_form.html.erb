@@ -1,13 +1,25 @@
 <%= form_with model: @post  do |form| %>
-  <div>
-    <%= form.label :title %>
-    <%= form.text_field :title %>
+  <div class='row'>
+    <div class='col-4'>
+      <%= form.text_field :title, class: 'form-control', placeholder: 'Publish title' %>
+    </div>
+
   </div>
-  <div class="field">
-    <%= form.label :content %>
-    <%= form.rich_text_area :content %>
+  <div class="field mt-4">
+    <%= form.rich_text_area :content, class: 'form-control customized-min-height' %>
   </div>
 
-  <%= form.select :status, options_for_select(Post.statuses.keys, selected: @post.status), {}, {class: '' } %>
-  <%= form.submit form.object.new_record? ? 'Create' : 'Update' %>
+  <div class='row my-4'>
+    <div class='col-3'>
+      <div class='form-floating'>
+        <%= form.select :status, options_for_select(Post.statuses.keys, selected: @post.status), {}, {class: 'form-select' } %>
+        <%= form.label :sort_by, 'Publish status' %>
+      </div>
+    </div>
+    <div class='col-7'></div>
+    <div class='col-2'>
+    <%= form.submit form.object.new_record? ? 'Create' : 'Update', class: 'btn btn-primary btn-lg' %>
+    </div>
+  </div>
+
 <% end %>
