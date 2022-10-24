@@ -1,4 +1,4 @@
-<%= render PostComponent.new(post: post, current_user: current_user, pin: pin, author: author) do |c| %>
+<%= render PostComponent.new(post: post, current_user: user, pin: pin, author: author) do |c| %>
   <%= c.with_avatar do %>
     <%= render Common::AvatarComponent.new(post: post) %>
   <% end %>

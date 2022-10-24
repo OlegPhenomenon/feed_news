@@ -1,0 +1,3 @@
+<%= turbo_stream.prepend "posts_broadcast",
+                        partial: 'feeds/post',
+                        locals: { post: post, pin: nil, author: author, user: user } %>

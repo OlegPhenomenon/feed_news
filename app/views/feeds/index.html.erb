@@ -1,3 +1,5 @@
+<%= turbo_stream_from :feed %>
+
   <main class="mt-4 mb-5">
     <div class="container">
       <div class="row mb-4">
@@ -34,15 +36,17 @@
           <% end %>
         <% end %>
 
-        <%= turbo_frame_tag 'posts' do %>
-            <%= render partial: 'feeds/posts', locals: { posts: @posts, author: false } %>
+        <div id='posts_broadcast'>
+          <%= turbo_frame_tag 'posts' do %>
+              <%= render partial: 'feeds/posts', locals: { posts: @posts, author: false } %>
 
-            <% if @pagy.pages > 1 %>
-              <div class="footer text-center mt-4" id="pagy">
-                <%== pagy_nav(@pagy)%>
-              </div>
-            <% end %>
-        <% end %>
+              <% if @pagy.pages > 1 %>
+                <div class="footer text-center mt-4" id="pagy">
+                  <%== pagy_nav(@pagy)%>
+                </div>
+              <% end %>
+          <% end %>
+        </div>
 
       </div>
     </div>

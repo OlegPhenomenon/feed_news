@@ -13,6 +13,10 @@ class PostsController < ApplicationController
 
     if @post.save
       flash.now[:notice] = I18n.t('posts.controller.created')
+      Posts::CreateBroadcast.call({
+                                    post: @post,
+                                    user: @post.user
+                                  })
       redirect_to root_path
     else
       respond_to do |format|
