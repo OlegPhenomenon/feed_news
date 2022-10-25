@@ -1,10 +1,17 @@
 <% if @post.content.body.attachables.present? %>
   <% attachment = @post.content.body.attachables.first %>
   <div style="width: 100%; display: flex; justify-content: center;">
-    <% if attachment.image? %>
-      <%= image_tag url_for(attachment), height: '300', width: '230', style: 'object-fit: contain;' %>
-    <% elsif attachment.video? %>
-      <%= video_tag url_for(attachment), preload: "auto", controls: "controls", width: "640", height: "360" %>
+    <% if attachment.class.name == 'Youtube' %>
+      <div>
+        <iframe id="ytplayer" type="text/html" width="640" height="360" src="https://www.youtube.com/embed/<%= attachment.id %>" frameborder="0"></iframe>
+      </div>
+    <% else %>
+
+      <% if attachment.image? %>
+        <%= image_tag url_for(attachment), height: '300', width: '230', style: 'object-fit: contain;' %>
+      <% elsif attachment.video? %>
+        <%= video_tag url_for(attachment), preload: "auto", controls: "controls", width: "640", height: "360" %>
+      <% end %>
     <% end %>
   </div>
 <% end %>

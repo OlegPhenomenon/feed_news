@@ -64,6 +64,8 @@ class Post < ApplicationRecord
 
   def body_text_contain_validator
     attachables_objects = content.body.attachables.map do |f|
+      next if f.class.name == 'Youtube'
+
       "[#{f.filename}]"
     end
 

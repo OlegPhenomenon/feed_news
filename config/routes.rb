@@ -10,4 +10,5 @@ Rails.application.routes.draw do
       patch :down_to
     end
   end
+  resources :youtube, only: :show
 end

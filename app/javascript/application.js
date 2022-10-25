@@ -4,3 +4,5 @@ import "./controllers"
 import * as bootstrap from "bootstrap"
 import "trix"
 import "@rails/actiontext"
+import "./trix_extensions"
+// import './youtu'

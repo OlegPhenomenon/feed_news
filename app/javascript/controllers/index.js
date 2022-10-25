@@ -20,4 +20,7 @@ application.register("toast", ToastController)
 import PresentHandlerController from "./present_handler_controller.js"
 application.register("present_handler", PresentHandlerController)
 
+// import TrixController from "./trix_controller.js"
+// application.register("trix", TrixController)
+
 application.register('read-more', ReadMore)

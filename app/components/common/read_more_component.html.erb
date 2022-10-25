@@ -13,7 +13,10 @@
       </div>
     </div>
     <template data-read-more-target="full" style='transition: 2s'>
+    <div class="trix-content">
+      <%#= raw CGI.unescape_element @post.content.body.to_s, ['strong'] %>
       <%= @post.content %>
+    </div>
     </template>
   </div>
 <% end %>

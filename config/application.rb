@@ -34,6 +34,11 @@ module FeedNews
       Rails::Html::WhiteListSanitizer.allowed_tags.add 'source'
       Rails::Html::WhiteListSanitizer.allowed_tags.add 'embed'
       Rails::Html::WhiteListSanitizer.allowed_tags.add 'iframe'
+      ActionText::ContentHelper.allowed_tags << "iframe"
+      Rails::Html::WhiteListSanitizer.allowed_tags << "iframe"
+
+      config.action_view.sanitized_allowed_tags = ['strong', 'em', 'a']
+      config.action_view.sanitized_allowed_attributes = ['href', 'title']
     end
   end
 end

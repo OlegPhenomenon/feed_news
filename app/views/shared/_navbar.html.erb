@@ -4,14 +4,14 @@
 
         <ul class="nav col-12 col-lg-auto me-lg-auto justify-content-center mb-md-0">
           <li>
-            <%= link_to I18n.t('navbar.feed'), root_path, class: 'nav-link px-2 link-secondary fs-2 text-dark'  %>
+            <%= link_to I18n.t('navbar.feed'), root_path, class: 'nav-link px-2 link-secondary fs-2 text-dark', data: { turbo: false }  %>
           </li>
         </ul>
 
         
         <% if user_signed_in? %>        
           <div class='me-3'>
-            <%= link_to I18n.t('navbar.post'), new_post_path, class: 'btn btn-outline-primary' %>
+            <%= link_to I18n.t('navbar.post'), new_post_path, class: 'btn btn-outline-primary', data: { turbo: false } %>
           </div>
         <% end %>
 
