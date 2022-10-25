@@ -5,7 +5,7 @@ class FeedsController < ApplicationController
     session[:published] = params[:sort_by].to_s if params[:sort_by].present?
     params[:sort_by] = session[:published] || ''
 
-    @pins = params[:hide_pins] == '1' ? [] : current_user&.pins&.order(position: :asc)
+    @pins = params[:hide_pins] == '1' ? [] : current_user&.sorted_pins
     @pagy, @posts = pagy(Post.search(current_user, params),
                          items: params[:per_page] ||= 15,
                          link_extra: 'data-turbo-action="advance"')
@@ -20,7 +20,7 @@ class FeedsController < ApplicationController
     @pins = if params[:hide_pins] == '1'
               []
             else
-              current_user&.pins&.includes(:post)&.where(post: { user_id: author.id})&.order(position: :asc)
+              current_user&.sorted_pins&.includes(:post)&.where(post: { user_id: author.id })
             end
     @pagy, @posts = pagy(Post.where(user: author)
                              .search(current_user, params)

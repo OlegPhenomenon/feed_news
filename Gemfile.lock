@@ -68,6 +68,7 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
+    ast (2.4.2)
     bcrypt (3.1.18)
     bindex (0.8.1)
     bootsnap (1.13.0)
@@ -92,6 +93,7 @@ GEM
       xpath (~> 3.2)
     childprocess (4.1.0)
     concurrent-ruby (1.1.10)
+    connection_pool (2.3.0)
     crass (1.0.6)
     cssbundling-rails (1.1.1)
       railties (>= 6.0.0)
@@ -172,6 +174,8 @@ GEM
     orm_adapter (0.5.0)
     pagy (5.10.1)
       activesupport
+    parser (3.1.2.1)
+      ast (~> 2.4.1)
     pg (1.4.4)
     pkg-config (1.4.9)
     poppler (4.0.3)
@@ -241,11 +245,17 @@ GEM
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     rubyzip (2.3.2)
+    scout_apm (5.3.2)
+      parser
     selenium-webdriver (4.5.0)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    sidekiq (6.5.7)
+      connection_pool (>= 2.2.5)
+      rack (~> 2.0)
+      redis (>= 4.5.0, < 5)
     simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -316,7 +326,9 @@ DEPENDENCIES
   rails (~> 7.0.4)
   redis (~> 4.0)
   rspec-rails
+  scout_apm
   selenium-webdriver
+  sidekiq (~> 6.5)
   simplecov
   sprockets-rails
   stimulus-rails

@@ -1,0 +1,11 @@
+development:
+  :concurrency: 5
+
+production:
+  :verbose: true
+  :concurrency: 25
+  :queues:
+    - [mailers, 7]
+    - [default, 5]
+
+:max_retries: 1

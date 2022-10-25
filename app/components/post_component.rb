@@ -51,4 +51,19 @@ class PostComponent < ViewComponent::Base
         end
     end
   end
+
+  def post_updated_at
+    return if post.published_at.nil?
+    return unless post.updated_at > post.published_at + 1.minute
+
+    content_tag(:span, "Post updated  at #{post.updated_at.to_formatted_s(:short)}", class: 'badge rounded-pill bg-warning text-dark')
+  end
+
+  def post_created_at
+    return unless current_user_is_author?
+
+    tag.span do
+      " | Created at <u>#{post.created_at.to_formatted_s(:short)}</u> |".html_safe
+    end
+  end
 end
