@@ -5,6 +5,7 @@ RSpec.describe PinsController, type: :controller do
     let(:pin) { create(:pin) }
     let(:pin2) { create(:pin) }
     let(:user) { create(:user) }
+    let(:user_post) { create(:post) }
 
     before(:each) do
       @request.env['devise.mapping'] = Devise.mappings[:user]
@@ -31,6 +32,18 @@ RSpec.describe PinsController, type: :controller do
 
       expect(pin.position).to eq(1)
       expect(pin2.position).to eq(0)
+    end
+
+    it 'should create a new pin' do
+      expect { post :create, params: { post_id: user_post.id }, format: :turbo_stream }
+        .to change { Pin.count }.by(1)
+    end
+
+    it 'should remove existed pin' do
+      pin.update(position: 0, user: user)
+
+      expect { delete :destroy, params: { id: pin.id }, format: :turbo_stream }
+        .to change { Pin.count }.by(-1)
     end
   end
 end

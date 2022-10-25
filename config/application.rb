@@ -21,6 +21,8 @@ module FeedNews
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     config.view_component.preview_paths << "#{Rails.root}/spec/components/previews"
+    config.view_component.preview_paths << "#{Rails.root}/lib/component_previews"
+    config.view_component.preview_paths << "#{Rails.root}/app/components/previews"
 
     config.after_initialize do
       Rails::Html::WhiteListSanitizer.allowed_attributes.add 'style'

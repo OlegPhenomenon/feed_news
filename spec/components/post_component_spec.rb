@@ -14,7 +14,7 @@ RSpec.describe PostComponent, type: :component do
       post.update(status: 2, user: user)
       user.reload
       post.reload
-      render_inline(described_class.new(post: post, current_user: user, pin: nil, author: false))
+      render_inline(PostComponent.new(post: post, current_user: user, pin: nil, author: false))
 
       expect(page).to have_text post.title
       expect(page).to have_text post.user.username
@@ -23,7 +23,7 @@ RSpec.describe PostComponent, type: :component do
       expect(page).to have_link post.user.username
 
       expect(page).to have_selector(:css, "a[href=\"#{authors_publications_path(id: post.user.id)}\"]")
-      expect(page).to have_selector(:css, "a[href=\"#{edit_post_path(id: post.id)}\"]")
+      expect(rendered_component).to have_selector(:css, "a[href=\"#{edit_post_path(id: post.id)}\"]")
       expect(page).to have_selector(:css, "form[action=\"#{post_path(id: post.id)}\"]")
       expect(page).to have_selector(:css, "form[action=\"#{pins_path(post_id: post.id, author: false)}\"]")
 
@@ -64,6 +64,14 @@ RSpec.describe PostComponent, type: :component do
       expect(page).not_to have_selector(:css, "form[action=\"#{post_path(id: post.id)}\"]")
       expect(page).not_to have_selector(:css, "a[href=\"#{up_to_pin_path(id: pin.id)}?author=false\"]")
       expect(page).not_to have_selector(:css, "form[action=\"#{pins_path(post_id: post.id, author: false)}\"]")
+    end
+
+    it 'should render draft post for author' do
+      post.update(status: 0, user: user)
+      user.reload
+      post.reload
+      render_inline(PostComponent.new(post: post, current_user: user, pin: nil, author: false))
+      expect(page).to have_text 'draft'
     end
   end
 

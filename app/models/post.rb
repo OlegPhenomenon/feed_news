@@ -77,7 +77,7 @@ class Post < ApplicationRecord
       Posts::CreateBroadcast.call({
                                     post: self,
                                     user: user
-                                  })
+                                  }) unless Rails.env.test?
     end
   end
 

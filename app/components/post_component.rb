@@ -4,11 +4,21 @@ class PostComponent < ViewComponent::Base
   include ActionView::Helpers::TagHelper
   include ActionView::Context
 
-  renders_one :avatar
-  renders_one :pinned_actions
-  renders_one :author_actions
-  renders_one :present_window
-  renders_one :read_more
+  renders_one :avatar, ->(post:) do
+    Common::AvatarComponent.new(post: post)
+  end
+  renders_one :pinned_actions, ->(pin:, author:) do
+    Actions::PinnedActionsComponent.new(pin: pin, author: author)
+  end
+  renders_one :author_actions, ->(post:) do
+    Actions::AuthorActionsComponent.new(post: post)
+  end
+  renders_one :present_window, ->(post:) do
+    Common::PresenterComponent.new(post: post)
+  end
+  renders_one :read_more, ->(post:) do
+    Common::ReadMoreComponent.new(post: post)
+  end
 
   attr_reader :post, :current_user, :pin, :author
 
@@ -17,10 +27,6 @@ class PostComponent < ViewComponent::Base
     @current_user = current_user
     @pin = pin
     @author = author
-  end
-
-  def pin_id
-    pin? ? pin.id : nil
   end
 
   def pin?

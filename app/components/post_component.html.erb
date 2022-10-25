@@ -3,13 +3,13 @@
   <section class="border-bottom mb-4">
     <div class="row align-items-end mb-4">
       <div class="col-lg-9 text-center text-lg-start mb-3 m-lg-0">
-        <%= avatar %>
+        <%= avatar(post: @post) %>
         <%= post_budget %>
       </div>
 
       <div class="col-lg-3 text-center text-lg-end" style="display: flex">
-        <%= author_actions if @current_user && current_user_is_author? %>
-        <%= pinned_actions if pin? && @current_user %>
+        <%= author_actions(post: @post) if @current_user && current_user_is_author? %>
+        <%= pinned_actions(pin: @pin, author: @author) if pin? && @current_user %>
 
         <% if @current_user && !pin? %>
             <%= button_to pins_path(post_id: @post.id, author: @author), method: :post, class: 'btn btn-primary px-3 me-1' do %>
@@ -26,10 +26,10 @@
         <h2 class='text-center'><%= @post.title %></h2>
 
         <div id='present'>
-          <%= present_window %>
+          <%= present_window(post: post) %>
         </div>
         
-        <%= read_more %>
+        <%= read_more(post: post) %>
       </div>
     </section>
 
