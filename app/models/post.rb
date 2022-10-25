@@ -12,6 +12,20 @@ class Post < ApplicationRecord
   scope :with_user_hidden, ->(user) { where(user_id: user.id, status: 1) }
   scope :with_published, -> { where(status: 2) }
 
+  scope :with_no_user_draft, lambda { |user, hide_draft|
+    return if user.nil?
+    return unless hide_draft.present?
+
+    where.not(user_id: user.id, status: 0)
+  }
+
+  scope :with_no_user_hidden, lambda { |user, hide_hidden|
+    return if user.nil?
+    return unless hide_hidden.present?
+
+    where.not(user_id: user.id, status: 1)
+  }
+
   scope :with_list, lambda { |user|
     return with_published if user.nil?
 
@@ -29,7 +43,7 @@ class Post < ApplicationRecord
   scope :with_title, lambda { |title|
     return unless title.present?
 
-    where('title like ?', "%#{title}%")
+    where('title ilike ?', "%#{title}%")
   }
 
   before_create :assign_published_at
@@ -58,13 +72,21 @@ class Post < ApplicationRecord
   end
 
   def assign_published_at
-    self.published_at = Time.zone.now if status == 'published' && published_at.nil?
+    if status == 'published' && published_at.nil?
+      self.published_at = Time.zone.now
+      Posts::CreateBroadcast.call({
+                                    post: self,
+                                    user: user
+                                  })
+    end
   end
 
   def self.search(user, params = {})
     without_user_pins(user)
-      .with_list(user)
       .with_title(params[:title])
+      .with_list(user)
+      .with_no_user_draft(user, params[:hide_draft])
+      .with_no_user_hidden(user, params[:hide_hidden])
       .order(sort_column(params) => sort_direction(params))
   end
 

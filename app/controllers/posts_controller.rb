@@ -15,7 +15,7 @@ class PostsController < ApplicationController
       Posts::CreateBroadcast.call({
                                     post: @post,
                                     user: @post.user
-                                  })
+                                  }) if @post.published?
       redirect_to root_path, notice: I18n.t('posts.controller.created')
     else
       respond_to do |format|

@@ -1,44 +1,71 @@
   <main class="mt-4 mb-5">
     <div class="container">
-      <div class="row mb-4">
+      <div class="mb-4">
         <%= form_with url: authors_publications_path(id: params[:id]),
                       method: :get,
                       data: { 
                         controller: 'debounce',
                         debounce_target: 'form',
                         turbo_action: "advance",
-                        turbo_frame: 'posts',
+                        turbo_frame: 'global',
                         action: 'input->debounce#search' 
-                            }, class: "divide-y divide-gray-200 space-y-10" do |f| %>
+                            }, class: "row align-items-center" do |f| %>
 
-        <div class='col-3'>
-          <div class='form-floating'>
-            <%= f.select :sort_by, 
-                      options_for_select([['Oldest', :published_at_asc],
-                                          ['Newest', :published_at_desc]],
-                                          selected: session[:published]&.to_sym || :published_at_asc),
-                      { }, { class: 'form-select'} %>
-            <%= f.label :sort_by, 'Sort by published' %>
-            <% end %>
+          <div class='col-2'>
+            <div class='form-floating row'>
+              <%= f.select :sort_by, 
+                        options_for_select([['Oldest', :published_at_asc],
+                                            ['Newest', :published_at_desc]],
+                                            selected: session[:published]&.to_sym || :published_at_asc),
+                        { }, { class: 'form-select'} %>
+              <%= f.label :sort_by, t('feeds.index.sort_by') %>
+            </div>
           </div>
-        </div>
+
+          <div class='col-2'>
+            <div class="form-check form-switch">
+              <%= f.check_box :hide_draft, { class: 'form-check-input', checked: params[:hide_draft] == '1' }, 1, nil %>
+              <label><%= t('feeds.index.hide_draft') %></label>
+            </div>
+          </div>
+          <div class='col-2'>
+            <div class="form-check form-switch">
+              <%= f.check_box :hide_hidden, { class: 'form-check-input', checked: params[:hide_hidden] == '1' }, 1, nil %>
+              <label><%= t('feeds.index.hide_hidden') %></label>
+            </div>
+          </div>
+          <div class='col-2'>
+            <div class="form-check form-switch">
+              <%= f.check_box :hide_pins, { class: 'form-check-input', checked: params[:hide_pins] == '1' }, 1, nil %>
+              <label><%= t('feeds.index.hide_pins') %></label>
+            </div>
+          </div>
+          <div class='col-4'>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+              <%= f.search_field :title, value: params[:title], placeholder: t('feeds.index.search'), class: 'form-control' %>
+            </div>
+          </div>
+        <% end %>  
                             
       </div>
       <div class="row">
-        <%= turbo_frame_tag 'pins' do %>
-          <% if user_signed_in? && current_user&.pins.present? %>
-            <%= render partial: 'feeds/pins', locals: { pins: @pins, author: true } %>
-          <% end %>
-        <% end %>
-
-        <%= turbo_frame_tag 'posts' do %>
-            <%= render partial: 'feeds/posts', locals: { posts: @posts, author: true } %>
-
-            <% if @pagy.pages > 1 %>
-              <div class="footer text-center mt-4" id="pagy">
-                <%== pagy_nav(@pagy)%>
-              </div>
+        <%= turbo_frame_tag 'global' do %>
+          <%= turbo_frame_tag 'pins' do %>
+            <% if user_signed_in? && current_user&.pins.present? %>
+              <%= render partial: 'feeds/pins', locals: { pins: @pins, author: true, user: current_user } %>
             <% end %>
+          <% end %>
+
+          <%= turbo_frame_tag 'posts' do %>
+              <%= render partial: 'feeds/posts', locals: { posts: @posts, author: true, user: current_user } %>
+
+              <% if @pagy.pages > 1 %>
+                <div class="footer text-center mt-4" id="pagy">
+                  <%== pagy_nav(@pagy)%>
+                </div>
+              <% end %>
+          <% end %>
         <% end %>
         
       </div>

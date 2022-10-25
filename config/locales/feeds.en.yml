@@ -1,4 +1,8 @@
 en:
   feeds:
     index:
-      
+      sort_by: Sort by published
+      hide_draft: Hide draft posts
+      hide_hidden: Hide hidden posts
+      hide_pins: Hide pins
+      search: Search by title
