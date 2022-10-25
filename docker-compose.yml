@@ -3,9 +3,15 @@ services:
   app:
     build:
       context: .
-      dockerfile: prod.Dockerfile
-    command: bash -c "bundle exec puma -C config/puma.rb"
-    env_file: .env
+    command: sh -c "bundle exec puma -C config/puma.rb"
+    # Best way to store sensentive values in env
+    # env_file: .env
+    environment:
+      - REDIS_URL=redis://redis:6379/1
+      - RAILS_ENV=development
+      - DATABASE_HOST=postgres
+      - DATABASE_USER=postgres
+      - PARALLEL_WORKERS=1
     volumes:
       - .:/app
     depends_on:
@@ -15,41 +21,35 @@ services:
     image: postgres:13-alpine
     command: ["postgres", "-c", "fsync=false", "-c", "full_page_writes=off"]
     environment:
-      env_file: .env
+    # Best way to store sensentive values in env
+    # env_file: .env
+      - DATABASE_HOST=postgres
+      - DATABASE_USER=postgres
+      - POSTGRES_HOST_AUTH_METHOD="trust"
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
     ports:
       - "5434:5432"
     restart: always
 
-  nginx:
-    build:
-      context: .
-      dockerfile: ./nginx.Dockerfile
-    depends_on:
-      - app
-    ports:
-      - 80:80
-
   sidekiq:
     build:
       context: .
-      dockerfile: prod.Dockerfile
     command: bundle exec sidekiq --environment development -C config/sidekiq.yml 
     links:
       - postgres
       - redis
     volumes:
       - ../../:/myapp
+    # Best way to store sensentive values in env
+    # env_file: .env
     environment:
       - REDIS_URL=redis://redis:6379/1
-      - RAILS_MASTER_KEY={{ vault_rails_master_key }}
-      - RAILS_ENV=production
-      - DATABASE_HOST={{database.database_host}}
-      - POSTGRES_USER={{database.postgres_user}}
-      - POSTGRES_PASSWORD={{database.postgres_password}}
-      - POSTGRES_DB={{database.postgres_db}}
-
+      - RAILS_ENV=development
+      - DATABASE_HOST=postgres
+      - DATABASE_USER=postgres
+      - PARALLEL_WORKERS=1
   redis:
     image: redis
     volumes:
