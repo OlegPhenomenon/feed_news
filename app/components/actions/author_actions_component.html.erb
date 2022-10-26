@@ -1,7 +1,7 @@
-<%= link_to edit_post_path(@post), method: :get, class: 'btn btn-primary px-3 me-1' do %>
+<%= link_to edit_post_path(id: @post.id), method: :get, class: 'btn btn-primary px-3 me-1' do %>
   <i class="fa-solid fa-pen-to-square"></i>
 <% end %>
-<%= button_to post_path(@post), method: :delete, class: 'btn btn-primary px-3 me-1',
+<%= button_to post_path(id: @post.id), method: :delete, class: 'btn btn-primary px-3 me-1',
                                               form: { data: { turbo_confirm: "Are you sure?" } },
                                               style: 'color: white; background-color: #ff6b6b;' do %>
   <i class="fa-solid fa-trash"></i>

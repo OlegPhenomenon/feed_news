@@ -26,10 +26,10 @@
         <h2 class='text-center'><%= @post.title %></h2>
 
         <div id='present'>
-          <%= present_window(post: post) %>
+          <%= present_window(post: @post) %>
         </div>
         
-        <%= read_more(post: post) %>
+        <%= read_more(post: @post) %>
       </div>
     </section>
 

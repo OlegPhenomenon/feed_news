@@ -11,7 +11,7 @@ class PostsController < ApplicationController
     @post = current_user.posts.build post_params
     authorize! :create, @post
 
-    if @post.save
+    if @post.save!
       Posts::CreateBroadcast.call({
                                     post: @post,
                                     user: @post.user
@@ -33,8 +33,13 @@ class PostsController < ApplicationController
 
   def update
     authorize! :update, @post
+    broadcast = post_params[:status] == 'published' && @post.published_at.nil?
 
     if @post.update post_params
+      Posts::CreateBroadcast.call({
+                            post: @post,
+                            user: current_user
+                          }) if broadcast
       redirect_to root_path, notice: I18n.t('posts.controller.updated')
     else
       respond_to do |format|

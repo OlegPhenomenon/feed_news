@@ -59,7 +59,7 @@ class Post < ApplicationRecord
   end
 
   def body_mandatory
-    return if content.body.attachables.any? { |f| f.class.name = 'Youtube' }
+    return if content.body.attachables.any? { |f| f.class.name == 'Youtube' }
 
     errors.add(:base, I18n.t('posts.errors.body_mandatory')) if title.empty? && !content?
   end
@@ -78,10 +78,6 @@ class Post < ApplicationRecord
   def assign_published_at
     if status == 'published' && published_at.nil?
       self.published_at = Time.zone.now
-      Posts::CreateBroadcast.call({
-                                    post: self,
-                                    user: user
-                                  }) unless Rails.env.test?
     end
   end
 
