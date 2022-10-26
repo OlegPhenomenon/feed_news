@@ -23,7 +23,6 @@ Rails.application.configure do
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present? || ENV['RENDER'].present?
-
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
 
@@ -39,6 +38,12 @@ Rails.application.configure do
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
+
+  # config.action_cable.url = "wss://feednews.onrender.com/cable"
+  config.action_cable.allowed_request_origins =  [ /http:\/\/.*/, /https:\/\/.*/ ]
+  config.action_cable.disable_request_forgery_protection = true
+  # config.force_ssl = true
+  config.cache_store = :redis_cache_store, { url: ENV.fetch('REDIS_CACHE_URL', nil) }
 
   # Mount Action Cable outside main process or domain.
   # config.action_cable.mount_path = nil
@@ -77,6 +82,11 @@ Rails.application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
+
+  config.action_controller.asset_host = 'https://feednews.onrender.com/'
+  config.asset_host = 'https://feednews.onrender.com/'
+  config.serve_static_files = true
+  config.public_file_server.enabled = true
 
   # Use a different logger for distributed setups.
   # require "syslog/logger"
