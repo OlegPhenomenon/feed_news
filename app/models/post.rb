@@ -59,6 +59,8 @@ class Post < ApplicationRecord
   end
 
   def body_mandatory
+    return if content.body.attachables.any? { |f| f.class.name = 'Youtube' }
+
     errors.add(:base, I18n.t('posts.errors.body_mandatory')) if title.empty? && !content?
   end
 

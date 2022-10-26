@@ -1,5 +1,5 @@
 <% if @post&.user&.avatar&.attached? %>
-  <%= image_tag @post.user&.avatar, class: 'rounded-5 shadow-1-strong me-2', height: 35 %>
+  <%= image_tag url_for(@post.user&.avatar), class: 'rounded-5 shadow-1-strong me-2', height: 35 %>
 <% else %>
   <%= image_tag url_for('default_image.png'), class: 'rounded-5 shadow-1-strong me-2', height: 35 %>
 <% end %>

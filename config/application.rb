@@ -25,17 +25,17 @@ module FeedNews
     config.view_component.preview_paths << "#{Rails.root}/app/components/previews"
 
     config.after_initialize do
-      Rails::Html::WhiteListSanitizer.allowed_attributes.add 'style'
-      Rails::Html::WhiteListSanitizer.allowed_attributes.add 'controls'
-      Rails::Html::WhiteListSanitizer.allowed_attributes.add 'poster'
+      # Rails::Html::WhiteListSanitizer.allowed_attributes.add 'style'
+      # Rails::Html::WhiteListSanitizer.allowed_attributes.add 'controls'
+      # Rails::Html::WhiteListSanitizer.allowed_attributes.add 'poster'
 
-      Rails::Html::WhiteListSanitizer.allowed_tags.add 'video'
-      Rails::Html::WhiteListSanitizer.allowed_tags.add 'audio'
-      Rails::Html::WhiteListSanitizer.allowed_tags.add 'source'
-      Rails::Html::WhiteListSanitizer.allowed_tags.add 'embed'
-      Rails::Html::WhiteListSanitizer.allowed_tags.add 'iframe'
-      ActionText::ContentHelper.allowed_tags << "iframe"
-      Rails::Html::WhiteListSanitizer.allowed_tags << "iframe"
+      # Rails::Html::WhiteListSanitizer.allowed_tags.add 'video'
+      # Rails::Html::WhiteListSanitizer.allowed_tags.add 'audio'
+      # Rails::Html::WhiteListSanitizer.allowed_tags.add 'source'
+      # Rails::Html::WhiteListSanitizer.allowed_tags.add 'embed'
+      # Rails::Html::WhiteListSanitizer.allowed_tags.add 'iframe'
+      # ActionText::ContentHelper.allowed_tags << "iframe"
+      # Rails::Html::WhiteListSanitizer.allowed_tags << "iframe"
 
       config.action_view.sanitized_allowed_tags = ['strong', 'em', 'a']
       config.action_view.sanitized_allowed_attributes = ['href', 'title']

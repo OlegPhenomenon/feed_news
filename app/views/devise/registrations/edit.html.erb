@@ -31,7 +31,7 @@
             <%= f.label "Avatar", class: "label block text-sm font-medium text-gray-700" %>
             
             <% if resource.avatar.attached? %>
-              <%= image_tag resource.avatar, class: 'img-thumbnail mb-4', style: 'width: 250px; height: 400px; object-fit: contain;' %>
+              <%= image_tag url_for(resource.avatar), class: 'img-thumbnail mb-4', style: 'width: 250px; height: 400px; object-fit: contain;' %>
             <% end %>
             
             <div class="dropzone dropzone-default dz-clickable rounded" data-controller="dropzone" data-dropzone-max-file-size="8" data-dropzone-max-files="6">

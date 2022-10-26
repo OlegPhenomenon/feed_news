@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.3'
+ruby '3.0.2'
 
 gem 'bootsnap', require: false
 gem 'cancan', '~> 1.6'
@@ -12,7 +12,6 @@ gem 'jbuilder'
 gem 'jsbundling-rails'
 gem 'pagy', '~> 5.10'
 gem 'pg', '~> 1.1'
-# gem 'poppler'
 gem 'puma', '~> 5.0'
 gem 'rails', '~> 7.0.4'
 gem 'redis', '~> 4.0'
