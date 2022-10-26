@@ -30,7 +30,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'scout_apm' # SCOUT_DEV_TRACE=true
+  # gem 'scout_apm' # SCOUT_DEV_TRACE=true
   gem 'web-console'
 end
 

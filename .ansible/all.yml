@@ -1,0 +1,18 @@
+---
+- name: Deploy pipeline
+  hosts: app
+  roles:
+    - role: docker
+      tags: docker
+
+    - role: user
+      tags: user
+
+    - role: preconfig
+      tags: preconfig
+
+    - role: deploy
+      tags: deploy
+
+    # - role: portainer
+    #   tags: portainer

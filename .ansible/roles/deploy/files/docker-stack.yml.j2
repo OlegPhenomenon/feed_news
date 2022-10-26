@@ -1,0 +1,122 @@
+version: "3.3"
+services:
+  redis:
+    image: redis:7.0-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/data
+    command: redis-server --appendonly yes --replica-read-only no 
+    networks:
+      - swapmeet
+
+  sidekiq:
+    image: {{app_image}}:{{app_image_tag}}
+    command: bundle exec sidekiq --environment production -C config/sidekiq.yml 
+    links:
+      - postgres
+      - redis
+    volumes:
+      - ../../:/myapp
+      - app:/work/storage
+    environment:
+      - REDIS_URL=redis://redis:6379/1
+      - REDIS_CABLE_URL=redis://redis:6379/1
+      - REDIS_CACHE_URL=redis://redis:6379/2
+      - RAILS_MASTER_KEY={{ vault_rails_master_key }}
+      - RAILS_ENV=production
+      - DATABASE_HOST={{database.database_host}}
+      - POSTGRES_USER={{database.postgres_user}}
+      - POSTGRES_PASSWORD={{database.postgres_password}}
+      - POSTGRES_DB={{database.postgres_db}}
+    networks:
+      - swapmeet
+  
+  app:
+    image: {{app_image}}:{{app_image_tag}}
+    ports:
+      - "3001:3000"
+    environment:
+      - DATABASE_HOST={{database.database_host}}
+      - RAILS_ENV=production
+      - RAILS_LOG_TO_STDOUT=true
+      - POSTGRES_USER={{database.postgres_user}}
+      - POSTGRES_PASSWORD={{database.postgres_password}}
+      - POSTGRES_DB={{database.postgres_db}}
+      - RAILS_MASTER_KEY={{ vault_rails_master_key }}
+      - REDIS_URL=redis://redis:6379/1
+      - REDIS_CABLE_URL=redis://redis:6379/1
+      - REDIS_CACHE_URL=redis://redis:6379/2
+    depends_on:
+      - postgres
+      - redis
+    links:
+      - db
+      - redis
+    networks:
+      - swapmeet
+    volumes:
+      - app:/work/storage
+    deploy:
+      replicas: 2
+
+  nginx:
+    image: {{nginx_image}}:{{nginx_image_tag}}
+    depends_on:
+      - app
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    links:
+      - app
+    volumes:
+      - .:/var/www/app
+      - ./nginx/products.conf:/etc/nginx/sites-enabled/products.conf
+      - ./nginx/products.conf:/etc/nginx/sites-available/products.conf
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./nginx/products-ssl.conf:/etc/nginx/sites-enabled/products-ssl.conf
+      - ./nginx/products-ssl.conf:/etc/nginx/sites-available/products-ssl.conf
+    networks:
+      - swapmeet
+    deploy:
+      replicas: 2
+
+  postgres:
+    image: postgres:13-alpine
+    command: ["postgres", "-c", "fsync=false", "-c", "full_page_writes=off"]
+    environment:
+      - DATABASE_HOST={{database.database_host}}
+      - POSTGRES_USER={{database.postgres_user}}
+      - POSTGRES_PASSWORD={{database.postgres_password}}
+      - POSTGRES_DB={{database.postgres_db}}
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    restart: always
+    networks:
+      - swapmeet
+
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   volumes:
+  #     - ./certbot/www/:/var/www/certbot/:rw
+  #     - ./certbot/conf/:/etc/letsencrypt/:rw
+
+  #   restart: always
+  #   volumes:
+  #     - ./certbot/www/certbot:/var/www
+  #     - ./certbot/conf/:/etc/letsencrypt
+  #   entrypoint: "/bin/sh -c 'while :; do certbot renew; sleep 12h; done'"
+      # networks:
+      # - webnet
+
+networks:
+  swapmeet:
+    external: true
+
+volumes:
+  redis:
+  app:
+

@@ -1,0 +1,25 @@
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - /home/deploy/app
+    - /home/deploy/nginx
+    - /home/deploy/db
+    # - /home/deploy/nginx/certbot
+    # - /home/deploy/nginx/certbot/conf
+    # - /home/deploy/nginx/certbot/conf/live/swapmeet.ee
+
+- name: Move files
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: "{{ role_path }}/files/products.conf", dest: "/home/deploy/nginx/products.conf" }
+    - { src: "{{ role_path }}/files/products-ssl.conf", dest: "/home/deploy/nginx/products-ssl.conf" }
+    # - { src: "{{ role_path }}/files/cert.pem", dest: "/home/deploy/nginx/certbot/conf/live/swapmeet.ee/cert.pem" }
+    # - { src: "{{ role_path }}/files/key.pem", dest: "/home/deploy/nginx/certbot/conf/live/swapmeet.ee/key.pem" }
+    # - { src: "{{ role_path }}/files/chain.pem", dest: "/home/deploy/nginx/certbot/conf/live/swapmeet.ee/chain.pem" }
+    # - { src: "{{ role_path }}/files/fullchain.pem", dest: "/home/deploy/nginx/certbot/conf/live/swapmeet.ee/fullchain.pem" }
+    # - { src: "{{ role_path }}/files/privkey.pem", dest: "/home/deploy/nginx/certbot/conf/live/swapmeet.ee/privkey.pem" }

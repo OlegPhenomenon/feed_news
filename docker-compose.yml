@@ -3,7 +3,7 @@ services:
   app:
     build:
       context: .
-    command: sh -c "bundle exec puma -C config/puma.rb"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     # Best way to store sensentive values in env
     # env_file: .env
     environment:
@@ -14,6 +14,8 @@ services:
       - PARALLEL_WORKERS=1
     volumes:
       - .:/app
+    ports:
+      - "3000:3000"
     depends_on:
       - postgres
   
@@ -54,3 +56,25 @@ services:
     image: redis
     volumes:
       - ../../tmp/db:/var/lib/redis/data
+# version: '3.8'
+# services:
+#   db:
+#     image: postgres
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: password
+#     volumes:
+#       - postgres:/var/lib/postgresql/data
+#   web:
+#     build: .
+#     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+#     volumes:
+#       - .:/Rails-Docker
+#     ports:
+#       - "3000:3000"
+#     depends_on:
+#       - db
+#     environment:
+#       - RAILS_MASTER_KEY=this_would_be_the_key
+# volumes:
+#   postgres:

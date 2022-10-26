@@ -1,0 +1,52 @@
+- name: Set github token to variable
+  shell: "echo $CR_PAT"
+  environment:
+    CR_PAT: "{{github.password}}"
+
+- name: Login to github registry
+  ansible.builtin.command:
+    cmd: "echo $CR_PAT | docker login ghcr.io -u {{github.username}} --password-stdin"
+
+- name: Template a file to /etc/file.conf
+  template:
+    src: "{{ role_path }}/files/docker-stack.yml.j2"
+    dest: /home/deploy/docker-stack.yml
+
+- name: Get docker info
+  shell: docker info
+  register: docker_info
+  changed_when: False
+
+- name: docker swarm init
+  shell: "docker swarm init"
+  when: "docker_info.stdout.find('Swarm: inactive') > 0"
+
+- name: Create ingress network
+  docker_network:
+    name: swapmeet
+    driver: overlay
+
+- name: Log into private registry and force re-authorization
+  docker_login:
+    registry: ghcr.io
+    username: "{{github.username}}"
+    password: "{{github.password}}"
+    reauthorize: yes
+
+- name: docker swarm deploy
+  shell: "docker stack deploy -c /home/deploy/{{ docker_stack}} {{stack_name}} --with-registry-auth"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

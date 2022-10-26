@@ -1,0 +1,58 @@
+- name: Install libs
+  apt:
+    update_cache: yes
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - python3-pip
+      - lsb-release
+      - gnupg
+      - netcat
+
+- name: Add key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+    update_cache: yes
+
+- name: Install docker
+  apt:
+    name: docker-ce
+    state: latest
+    update_cache: yes
+
+- name: Check do Docker has been installed
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
+
+
+- name: Download last version of Docker-compose
+  uri:
+    url: https://api.github.com/repos/docker/compose/releases/latest
+    body_format: json
+  register: page
+
+- name: Install docker-compose
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/{{ page.json.tag_name }}/docker-compose-Linux-x86_64"
+    dest: /usr/local/bin/docker-compose
+    mode: 0755
+
+- name: Install pip packages
+  pip:
+    name: docker
+
+- name: add user to docker group
+  user:
+    name: "{{ ansible_user }}"
+    groups: "{{docker_group}}"
+    append: yes

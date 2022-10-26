@@ -1,0 +1,32 @@
+- name: Create group
+  group:
+    name: "{{server_user}}"
+
+- name: Create user
+  user:
+    name: "{{server_user}}"
+    group: "{{server_group}}"
+    groups: "{{server_group}}"
+    state: present
+    shell: "/bin/bash"
+
+- name: Set up authorized_keys for webserver user
+  authorized_key:
+    user: "{{server_user}}"
+    key: "{{ item }}"
+  with_file:
+    - "{{ role_path }}/files/public_keys/{{ public_key }}"
+  tags:
+    - authorized_keys
+
+- name: Force terminal color prompt
+  lineinfile:
+    dest: "/home/{{server_user}}/.bashrc"
+    regexp: "^force_color_prompt=yes"
+    line: "force_color_prompt=yes"
+
+- name: add "{{server_user}}" user to docker group
+  user:
+    name: "{{server_user}}"
+    groups: "{{docker_group}}"
+    append: yes

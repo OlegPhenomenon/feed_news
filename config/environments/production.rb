@@ -22,7 +22,7 @@ Rails.application.configure do
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
-  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present? || ENV['RENDER'].present?
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
@@ -41,6 +41,7 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # config.action_cable.url = "wss://feednews.onrender.com/cable"
+  config.action_cable.url = "wss://products.ee/cable"
   config.action_cable.allowed_request_origins =  [ /http:\/\/.*/, /https:\/\/.*/ ]
   config.action_cable.disable_request_forgery_protection = true
   # config.force_ssl = true
@@ -77,6 +78,10 @@ Rails.application.configure do
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
+  config.active_job.queue_adapter     = :sidekiq
+  config.action_mailer.perform_caching = false
+  config.i18n.fallbacks = true
+
 
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
@@ -84,14 +89,15 @@ Rails.application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
-  config.action_controller.asset_host = 'https://feednews.onrender.com/'
-  config.asset_host = 'https://feednews.onrender.com/'
+  config.action_controller.asset_host = 'https://products.ee/'
+  config.asset_host = 'https://products.ee/'
   config.serve_static_files = false
   config.public_file_server.enabled = true
 
   # Use a different logger for distributed setups.
   # require "syslog/logger"
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new "app-name")
+  config.log_formatter = ::Logger::Formatter.new
 
   if ENV["RAILS_LOG_TO_STDOUT"].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
