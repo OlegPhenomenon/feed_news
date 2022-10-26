@@ -11,7 +11,7 @@ class PostsController < ApplicationController
     @post = current_user.posts.build post_params
     authorize! :create, @post
 
-    if @post.save!
+    if @post.save
       Posts::CreateBroadcast.call({
                                     post: @post,
                                     user: @post.user

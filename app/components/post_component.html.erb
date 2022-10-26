@@ -21,11 +21,11 @@
     </div>
   </section>
 
-    <section class='flex flex-row justify-content-center' data-controller='present_handler'>
+    <section class='flex flex-row justify-content-center' data-controller='present-handler'>
       <div >
         <h2 class='text-center'><%= @post.title %></h2>
 
-        <div id='present'>
+        <div data-present-handler-target='presenter'>
           <%= present_window(post: @post) %>
         </div>
         

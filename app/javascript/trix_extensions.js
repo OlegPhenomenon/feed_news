@@ -50,7 +50,7 @@ function toolbarDefaultHTML() {
   <div class="trix-dialogs" data-trix-dialogs>
     <div class="trix-dialog trix-dialog--link" data-trix-dialog="href" data-trix-dialog-attribute="href">
       <div class="trix-dialog__link-fields">
-        <input type="url" name="href" class="trix-input trix-input--dialog" placeholder="${lang.urlPlaceholder}" aria-label="${lang.url}" required data-trix-input>
+        <input type="url" name="href" class="trix-input trix-input--dialog" placeholder="${lang.urlPlaceholder}" aria-label="${lang.url}" data-trix-input>
         <div class="flex">
           <input type="button" class="btn btn-secondary btn-small mr-1" value="${lang.link}" data-trix-method="setAttribute">
           <input type="button" class="btn btn-tertiary outline btn-small" value="${lang.unlink}" data-trix-method="removeAttribute">
