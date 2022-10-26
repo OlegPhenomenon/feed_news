@@ -51,6 +51,13 @@ class Post < ApplicationRecord
 
   validate :title_mandatory, on: %i[create update]
   validate :body_mandatory, on: %i[create update]
+  validate :title_for_aticle, on: %i[create update]
+
+  def title_for_aticle
+    if title.empty? && content.body.attachables.present? && body_text_contain_validator
+      errors.add(:base, I18n.t('posts.errors.title_mandatory'))
+    end
+  end
 
   def title_mandatory
     return if title.empty? && body_text_contain_validator

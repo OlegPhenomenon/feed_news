@@ -32,27 +32,27 @@ class FeedsController < ApplicationController
     session[:published] = params[:sort_by].to_s if params[:sort_by].present?
     params[:sort_by] = session[:published] || ''
 
-    session[:hide_draft] = params[:hide_draft].to_s if params[:hide_draft].present?
-    params[:hide_draft] = session[:hide_draft] || ''
+    # session[:hide_draft] = params[:hide_draft].to_s if params[:hide_draft].present?
+    # params[:hide_draft] = session[:hide_draft] || ''
 
-    session[:hide_hidden] = params[:hide_hidden].to_s if params[:hide_hidden].present?
-    params[:hide_hidden] = session[:hide_hidden] || ''
+    # session[:hide_hidden] = params[:hide_hidden].to_s if params[:hide_hidden].present?
+    # params[:hide_hidden] = session[:hide_hidden] || ''
 
-    session[:hide_pins] = params[:hide_pins].to_s if params[:hide_pins].present?
-    params[:hide_pins] = session[:hide_pins] || ''
+    # session[:hide_pins] = params[:hide_pins].to_s if params[:hide_pins].present?
+    # params[:hide_pins] = session[:hide_pins] || ''
   end
 
   def session_author_handler
     session[:author_published] = params[:sort_by].to_s if params[:sort_by].present?
     params[:sort_by] = session[:author_published] || ''
 
-    session[:author_hide_draft] = params[:hide_draft].to_s if params[:hide_draft].present?
-    params[:hide_draft] = session[:author_hide_draft] || ''
+    # session[:author_hide_draft] = params[:hide_draft].to_s if params[:hide_draft].present?
+    # params[:hide_draft] = session[:author_hide_draft] || ''
 
-    session[:author_hide_hidden] = params[:hide_hidden].to_s if params[:hide_hidden].present?
-    params[:hide_hidden] = session[:author_hide_hidden] || ''
+    # session[:author_hide_hidden] = params[:hide_hidden].to_s if params[:hide_hidden].present?
+    # params[:hide_hidden] = session[:author_hide_hidden] || ''
 
-    session[:author_hide_pins] = params[:hide_pins].to_s if params[:hide_pins].present?
-    params[:hide_pins] = session[:author_hide_pins] || ''
+    # session[:author_hide_pins] = params[:hide_pins].to_s if params[:hide_pins].present?
+    # params[:hide_pins] = session[:author_hide_pins] || ''
   end
 end
