@@ -5,5 +5,9 @@ module Actions
     def initialize(post:)
       @post = post
     end
+
+    def render?
+      !post.disable_edit
+    end
   end
 end

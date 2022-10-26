@@ -8,6 +8,8 @@ class Post < ApplicationRecord
 
   enum status: %i[draft hidden published]
 
+  attr_accessor :disable_edit
+
   scope :with_user_draft, ->(user) { where(user_id: user.id, status: 0) }
   scope :with_user_hidden, ->(user) { where(user_id: user.id, status: 1) }
   scope :with_published, -> { where(status: 2) }

@@ -12,6 +12,7 @@ class PostsController < ApplicationController
     authorize! :create, @post
 
     if @post.save
+      @post.disable_edit = true
       Posts::CreateBroadcast.call({
                                     post: @post,
                                     user: @post.user
@@ -29,13 +30,16 @@ class PostsController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    authorize! :edit, @post
+  end
 
   def update
     authorize! :update, @post
     broadcast = post_params[:status] == 'published' && @post.published_at.nil?
 
     if @post.update post_params
+      @post.disable_edit = true
       Posts::CreateBroadcast.call({
                             post: @post,
                             user: current_user
@@ -88,3 +92,4 @@ class PostsController < ApplicationController
     params.require(:post).permit(:title, :content, :status, images: [])
   end
 end
+

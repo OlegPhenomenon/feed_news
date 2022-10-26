@@ -1,10 +1,9 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user)
+  def initialize(user = User.new)
+    @user = user
     # Define abilities for the passed in user here. For example:
-    #
-    #   user ||= User.new # guest user (not logged in)
     #   if user.admin?
     #     can :manage, :all
     #   else
@@ -29,7 +28,7 @@ class Ability
     # See the wiki for details:
     # https://github.com/ryanb/cancan/wiki/Defining-Abilities
 
-    can :manage, Post, user_id: user.id
+    can [:edit, :update, :destroy, :create], Post, user_id: user.id
     can :read, Post, :all
     can :manage, User, id: user.id
     can :manage, Pin, user_id: user.id
