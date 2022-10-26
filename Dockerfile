@@ -1,4 +1,4 @@
-FROM ruby:3.0.2-alpine3.13 AS builder
+FROM ruby:3.0.3-alpine3.13 AS builder
 
 # Minimal requirements to run a Rails app
 RUN apk add --no-cache --update build-base \
@@ -51,7 +51,7 @@ RUN bundle exec rails assets:clobber assets:precompile --trace && \
   rm -rf node_modules tmp/cache vendor/assets test
 
   
-FROM ruby:3.0.2-alpine3.13
+FROM ruby:3.0.3-alpine3.13
 
 RUN mkdir -p /work
 WORKDIR /work
