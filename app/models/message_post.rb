@@ -1,0 +1,2 @@
+class MessagePost < Post
+end

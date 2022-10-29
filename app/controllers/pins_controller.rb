@@ -23,7 +23,7 @@ class PinsController < ApplicationController
             turbo_stream.append('pins', partial: 'feeds/post', locals: { post: result.instance.post,
                                                                          pin: result.instance,
                                                                          author: params['author'] == 'true',
-                                                                         user: current_user})
+                                                                         user: current_user })
           ]
         else
           flash.now[:alert] = result.errors
@@ -86,15 +86,15 @@ class PinsController < ApplicationController
 
   def up_to
     authorize! :up_to, @pin
-    result = Pins::MovePinService.move_up(user: current_user, pin: @pin, is_from_author: params['author'] == 'true')
 
+    result = params['author'] == 'true' ? @pin.author_pin_move_up(user: current_user) : @pin.move_up(user: current_user)
     rendering_move_result(result)
   end
 
   def down_to
     authorize! :down_to, @pin
 
-    result = Pins::MovePinService.move_down(user: current_user, pin: @pin, is_from_author: params['author'] == 'true')
+    result = params['author'] == 'true' ? @pin.author_pin_move_down(user: current_user) : @pin.move_down(user: current_user)
     rendering_move_result(result)
   end
 

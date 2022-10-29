@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '3.0.3'
 
 gem 'bootsnap', require: false
-gem 'cancan', '~> 1.6'
+# gem 'cancan', '~> 1.6'
 gem 'cssbundling-rails'
 gem 'devise', '~> 4.8'
 gem 'image_processing', '~> 1.2'
@@ -44,3 +44,5 @@ group :test do
 end
 
 gem "sidekiq", "~> 6.5"
+
+gem "cancancan", "~> 3.4"

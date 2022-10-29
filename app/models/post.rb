@@ -6,26 +6,26 @@ class Post < ApplicationRecord
   has_rich_text :content
   has_many :pins, dependent: :destroy
 
-  enum status: %i[draft hidden published]
+  enum :status, { draft: 0, hidden: 1, published: 2 }
+
+  def self.types
+    %w[AttachablePost ArticlePost MessagePost]
+  end
 
   attr_accessor :disable_edit
 
-  scope :with_user_draft, ->(user) { where(user_id: user.id, status: 0) }
-  scope :with_user_hidden, ->(user) { where(user_id: user.id, status: 1) }
-  scope :with_published, -> { where(status: 2) }
-
+  scope :with_published, -> { published }
   scope :with_no_user_draft, lambda { |user, hide_draft|
     return if user.nil?
     return unless hide_draft.present?
 
-    where.not(user_id: user.id, status: 0)
+    not_draft
   }
-
   scope :with_no_user_hidden, lambda { |user, hide_hidden|
     return if user.nil?
     return unless hide_hidden.present?
 
-    where.not(user_id: user.id, status: 1)
+    not_hidden
   }
 
   scope :with_list, lambda { |user|
@@ -48,34 +48,28 @@ class Post < ApplicationRecord
     where('title ilike ?', "%#{title}%")
   }
 
+  validates :title, presence: true, if: :attachable_post?
+  validates :title, presence: true, if: :article_post?
+  validates :content, presence: true, if: :message_post?
+
   before_create :assign_published_at
   before_update :assign_published_at
 
-  validate :title_mandatory, on: %i[create update]
-  validate :body_mandatory, on: %i[create update]
-  validate :title_for_aticle, on: %i[create update]
-
-  def title_for_aticle
-    if title.empty? && content.body.attachables.present? && body_text_contain_validator
-      errors.add(:base, I18n.t('posts.errors.title_mandatory'))
-    end
+  def attachable_post?
+    content&.body&.attachables&.present? && !contain_plain_text?
   end
 
-  def title_mandatory
-    return if title.empty? && body_text_contain_validator
-
-    errors.add(:base, I18n.t('posts.errors.title_mandatory')) if title.empty? && content.body.attachables.present?
+  def article_post?
+    content.body.attachables.present? && contain_plain_text?
   end
 
-  def body_mandatory
-    return if content.body.attachables.any? { |f| f.class.name == 'Youtube' }
-
-    errors.add(:base, I18n.t('posts.errors.body_mandatory')) if title.empty? && !content?
+  def message_post?
+    contain_plain_text? && content.body.attachables.empty?
   end
 
-  def body_text_contain_validator
+  def contain_plain_text?
     attachables_objects = content.body.attachables.map do |f|
-      next if f.class.name == 'Youtube'
+      next if f.instance_of?(::Youtube)
 
       "[#{f.filename}]"
     end
@@ -85,9 +79,7 @@ class Post < ApplicationRecord
   end
 
   def assign_published_at
-    if status == 'published' && published_at.nil?
-      self.published_at = Time.zone.now
-    end
+    self.published_at = Time.zone.now if status == 'published' && published_at.nil?
   end
 
   def self.search(user, params = {})

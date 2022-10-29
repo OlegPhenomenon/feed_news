@@ -28,10 +28,15 @@ class Ability
     # See the wiki for details:
     # https://github.com/ryanb/cancan/wiki/Defining-Abilities
 
-    can [:edit, :update, :destroy, :create], Post, user_id: user.id
+    # can [:edit, :update, :destroy, :create], Post, user_id: user.id
     can :read, Post, :all
+
+    return unless user.present?
+
+    can :manage, Post, user_id: user.id
     can :manage, User, id: user.id
     can :manage, Pin, user_id: user.id
+
     can :up_to, Pin, user_id: user.id
     can :down_to, Pin, user_id: user.id
   end

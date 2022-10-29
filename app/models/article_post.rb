@@ -1,0 +1,2 @@
+class ArticlePost < Post
+end

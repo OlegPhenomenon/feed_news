@@ -4,24 +4,27 @@ class PostsController < ApplicationController
   before_action :set_post, only: %i[edit update destroy]
 
   def new
-    @post = current_user.posts.build
+    @post = Post.new(user: current_user)
+
+    authorize! :manage, @post
   end
 
   def create
-    @post = current_user.posts.build post_params
-    authorize! :create, @post
+    result = Posts::CreateService.call(user: current_user, params: post_params)
 
-    if @post.save
-      @post.disable_edit = true
+    if result.success?
+      post = result.instance
+
+      post.disable_edit = true
       Posts::CreateBroadcast.call({
-                                    post: @post,
-                                    user: @post.user
-                                  }) if @post.published?
+                                    post: post,
+                                    user: post.user
+                                  }) if post.published?
       redirect_to root_path, notice: I18n.t('posts.controller.created')
     else
       respond_to do |format|
         format.turbo_stream do
-          flash.now[:alert] = @post.errors.full_messages.join('; ')
+          flash.now[:alert] = result.errors
           render turbo_stream: [
             render_turbo_flash
           ]
@@ -37,18 +40,21 @@ class PostsController < ApplicationController
   def update
     authorize! :update, @post
     broadcast = post_params[:status] == 'published' && @post.published_at.nil?
+    result = Posts::UpdateService.call(post: @post, params: post_params)
 
-    if @post.update post_params
-      @post.disable_edit = true
+    if result.success?
+      post = result.instance
+
+      post.disable_edit = true
       Posts::CreateBroadcast.call({
-                            post: @post,
-                            user: current_user
+                            post: post,
+                            user: post.user
                           }) if broadcast
       redirect_to root_path, notice: I18n.t('posts.controller.updated')
     else
       respond_to do |format|
         format.turbo_stream do
-          flash.now[:alert] = @post.errors.full_messages.join('; ')
+          flash.now[:alert] = result.errors
           render turbo_stream: [
             render_turbo_flash
           ]
@@ -85,7 +91,7 @@ class PostsController < ApplicationController
   private
 
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.accessible_by(current_ability).find(params[:id])
   end
 
   def post_params

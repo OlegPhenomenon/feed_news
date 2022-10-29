@@ -1,4 +1,6 @@
 class Pin < ApplicationRecord
+  include Moveable
+
   belongs_to :user
   belongs_to :post
 

@@ -1,0 +1,2 @@
+class AttachablePost < Post
+end

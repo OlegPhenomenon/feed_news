@@ -7,7 +7,7 @@ module Common
     end
 
     def no_render_compomnent?
-      post.content.body.attachables.count == 1 && !post.body_text_contain_validator
+      post.content.body.attachables.count == 1 && !post.contain_plain_text?
     end
   end
 end
